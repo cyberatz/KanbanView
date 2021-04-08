@@ -9,7 +9,7 @@ __author__ = "Alexander Willner"
 __copyright__ = "2020 Alexander Willner"
 __credits__ = ["Alexander Willner"]
 __license__ = "Apache License 2.0"
-__version__ = "2.6.3"
+__version__ = "2.7.0.dev1"
 __maintainer__ = "Alexander Willner"
 __email__ = "alex@willner.ws"
 __status__ = "Development"
@@ -22,8 +22,12 @@ import getpass
 import configparser
 from pathlib import Path
 
+# the new core library, migration ongoing
+import things
 
 # pylint: disable=R0904,R0902
+
+
 class Things3():
     """Simple read-only API for Things 3."""
 
@@ -41,14 +45,14 @@ class Things3():
     DATE_DUE = "dueDate"
     DATE_START = "startDate"
     DATE_STOP = "stopDate"
-    IS_INBOX = "start = 0"
+    IS_INBOX = "start = 0" # noqa
     IS_ANYTIME = "start = 1"
     IS_SOMEDAY = "start = 2"
     IS_SCHEDULED = f"{DATE_START} IS NOT NULL"
     IS_NOT_SCHEDULED = f"{DATE_START} IS NULL"
-    IS_DUE = f"{DATE_DUE} IS NOT NULL"
+    IS_DUE = f"{DATE_DUE} IS NOT NULL" # noqa
     IS_RECURRING = "recurrenceRule IS NOT NULL"
-    IS_NOT_RECURRING = "recurrenceRule IS NULL"
+    IS_NOT_RECURRING = "recurrenceRule IS NULL" # noqa
     IS_TASK = "type = 0"
     IS_PROJECT = "type = 1"
     IS_HEADING = "type = 2"
@@ -78,6 +82,9 @@ class Things3():
     anonymize = False
     config = configparser.ConfigParser()
     config.read(FILE_CONFIG)
+    mode = 'to-do'
+    filter_project = None
+    filter_area = None
 
     # pylint: disable=R0913
     def __init__(self,
@@ -195,177 +202,98 @@ class Things3():
                     task['context']) if 'context' in task else ''
         return tasks
 
+    def convert_new_things_lib(self, tasks):
+        """Convert tasks from new library to old expectations."""
+        for task in tasks:
+            task['context'] = task.get("project_title", None) or \
+                task.get("area_title", None) or \
+                task.get("heading_title", None)
+            task['context_uuid'] = task.get("project", None) or \
+                task.get("area", None) or \
+                task.get("heading", None)
+            task['due'] = task.get('deadline', None)
+            task['started'] = task.get('start_date', None)
+            task['size'] = len(things.api.tasks(
+                project=task['uuid'], filepath=self.database))
+        tasks.sort(key=lambda task: task['title'] or '', reverse=False)
+        tasks = self.anonymize_tasks(tasks)
+        return tasks
+
     def get_inbox(self):
-        """Get all tasks from the inbox."""
-        query = f"""
-                TASK.{self.IS_NOT_TRASHED} AND
-                TASK.{self.IS_TASK} AND
-                TASK.{self.IS_OPEN} AND
-                TASK.{self.IS_INBOX}
-                ORDER BY TASK.duedate DESC , TASK.todayIndex
-                """
-        return self.get_rows(query)
+        """Get tasks from inbox."""
+        tasks = things.api.inbox(type=self.mode, project=self.filter_project,
+                                 area=self.filter_area, filepath=self.database)
+        tasks = self.convert_new_things_lib(tasks)
+        return tasks
 
     def get_today(self):
-        """Get all tasks from the todays list."""
-        query = f"""
-                TASK.{self.IS_NOT_TRASHED} AND
-                TASK.{self.IS_TASK} AND
-                TASK.{self.IS_OPEN} AND
-                (TASK.{self.IS_ANYTIME} OR (
-                     TASK.{self.IS_SOMEDAY} AND
-                     TASK.{self.DATE_START} <= strftime('%s', 'now')
-                     )
-                ) AND
-                TASK.{self.IS_SCHEDULED} AND (
-                    (
-                        PROJECT.title IS NULL OR (
-                            PROJECT.{self.IS_NOT_TRASHED}
-                        )
-                    ) AND (
-                        HEADPROJ.title IS NULL OR (
-                            HEADPROJ.{self.IS_NOT_TRASHED}
-                        )
-                    )
-                )
-                ORDER BY TASK.duedate DESC , TASK.todayIndex
-                """
-        return self.get_rows(query)
+        """Get tasks from today."""
+        tasks = things.api.today(type=self.mode, project=self.filter_project,
+                                 area=self.filter_area, filepath=self.database)
+        tasks = self.convert_new_things_lib(tasks)
+        tasks.sort(key=lambda task: task.get('started', ''), reverse=True)
+        tasks.sort(key=lambda task: task.get('todayIndex', ''), reverse=False)
+        return tasks
 
     def get_task(self, area=None, project=None):
         """Get tasks."""
-        afilter = f'AND TASK.area = "{area}"' \
-            if area is not None else ''
-        pfilter = f'AND TASK.project = "{project}"' \
-            if project is not None else ''
-        query = f"""
-                TASK.{self.IS_NOT_TRASHED} AND
-                TASK.{self.IS_TASK} AND
-                TASK.{self.IS_OPEN} AND
-                TASK.{self.IS_ANYTIME} AND
-                TASK.{self.IS_NOT_RECURRING} AND (
-                    (
-                        PROJECT.title IS NULL OR (
-                            PROJECT.{self.IS_NOT_TRASHED}
-                        )
-                    ) AND (
-                        HEADPROJ.title IS NULL OR (
-                            HEADPROJ.{self.IS_NOT_TRASHED}
-                        )
-                    )
-                )
-                {afilter}
-                {pfilter}
-                ORDER BY TASK.duedate DESC, TASK.{self.DATE_CREATE} DESC
-                """
-        return self.get_rows(query)
+        tasks = things.api.tasks(
+            area=area, project=project, filepath=self.database)
+        tasks = self.convert_new_things_lib(tasks)
+        return tasks
 
     def get_someday(self):
         """Get someday tasks."""
-        query = f"""
-                TASK.{self.IS_NOT_TRASHED} AND
-                TASK.{self.IS_TASK} AND
-                TASK.{self.IS_OPEN} AND
-                TASK.{self.IS_SOMEDAY} AND
-                TASK.{self.IS_NOT_SCHEDULED} AND
-                TASK.{self.IS_NOT_RECURRING} AND (
-                    (
-                        PROJECT.title IS NULL OR (
-                            PROJECT.{self.IS_NOT_TRASHED}
-                        )
-                    ) AND (
-                        HEADPROJ.title IS NULL OR (
-                            HEADPROJ.{self.IS_NOT_TRASHED}
-                        )
-                    )
-                )
-                ORDER BY TASK.duedate DESC, TASK.{self.DATE_CREATE} DESC
-                """
-        return self.get_rows(query)
+        tasks = things.api.someday(type=self.mode,
+                                   project=self.filter_project,
+                                   area=self.filter_area,
+                                   filepath=self.database)
+        tasks = self.convert_new_things_lib(tasks)
+        tasks.sort(key=lambda task: task['deadline'] or '', reverse=True)
+        return tasks
 
     def get_upcoming(self):
         """Get upcoming tasks."""
-        query = f"""
-                TASK.{self.IS_NOT_TRASHED} AND
-                TASK.{self.IS_TASK} AND
-                TASK.{self.IS_OPEN} AND
-                TASK.{self.IS_SOMEDAY} AND
-                TASK.{self.IS_SCHEDULED} AND
-                TASK.{self.IS_NOT_RECURRING} AND (
-                    (
-                        PROJECT.title IS NULL OR (
-                            PROJECT.{self.IS_NOT_TRASHED}
-                        )
-                    ) AND (
-                        HEADPROJ.title IS NULL OR (
-                            HEADPROJ.{self.IS_NOT_TRASHED}
-                        )
-                    )
-                )
-                ORDER BY TASK.startdate, TASK.todayIndex
-                """
-        return self.get_rows(query)
+        tasks = things.api.upcoming(type=self.mode,
+                                    project=self.filter_project,
+                                    area=self.filter_area,
+                                    filepath=self.database)
+        tasks = self.convert_new_things_lib(tasks)
+        tasks.sort(key=lambda task: task['started'] or '', reverse=False)
+        return tasks
 
     def get_waiting(self):
         """Get waiting tasks."""
-        return self.get_tag(self.tag_waiting)
+        tasks = self.get_tag(self.tag_waiting)
+        tasks.sort(key=lambda task: task['started'] or '', reverse=False)
+        return tasks
 
     def get_mit(self):
         """Get most important tasks."""
         return self.get_tag(self.tag_mit)
 
     def get_tag(self, tag):
-        """Get task with specific tag"""
-        query = f"""
-                TASK.{self.IS_NOT_TRASHED} AND
-                TASK.{self.IS_TASK} AND
-                TASK.{self.IS_OPEN} AND
-                TASK.{self.IS_NOT_RECURRING} AND
-                TAGS.tags=(SELECT uuid FROM {self.TABLE_TAG}
-                             WHERE title='{tag}'
-                          )
-                AND (
-                    (
-                        PROJECT.title IS NULL OR (
-                            PROJECT.{self.IS_NOT_TRASHED}
-                        )
-                    ) AND (
-                        HEADPROJ.title IS NULL OR (
-                            HEADPROJ.{self.IS_NOT_TRASHED}
-                        )
-                    )
-                )
-                ORDER BY TASK.duedate DESC , TASK.todayIndex
-                """
-        return self.get_rows(query)
+        """Get task with specific tag."""
+        try:
+            tasks = things.api.tasks(tag=tag, type=self.mode,
+                                     project=self.filter_project,
+                                     area=self.filter_area,
+                                     filepath=self.database)
+            tasks = self.convert_new_things_lib(tasks)
+        except ValueError:
+            tasks = []
+        if tag in [self.tag_waiting]:
+            tasks.sort(key=lambda task: task['started'] or '', reverse=False)
+        return tasks
 
     def get_tag_today(self, tag):
-        """Get today tasks with specific tag"""
-        query = f"""
-                TASK.{self.IS_NOT_TRASHED} AND
-                TASK.{self.IS_TASK} AND
-                TASK.{self.IS_OPEN} AND
-                (TASK.{self.IS_ANYTIME} OR (
-                     TASK.{self.IS_SOMEDAY} AND
-                     TASK.{self.DATE_START} <= strftime('%s', 'now')
-                     )
-                ) AND
-                TAGS.tags=(SELECT uuid FROM {self.TABLE_TAG}
-                             WHERE title='{tag}') AND
-                TASK.{self.IS_SCHEDULED} AND (
-                    (
-                        PROJECT.title IS NULL OR (
-                            PROJECT.{self.IS_NOT_TRASHED}
-                        )
-                    ) AND (
-                        HEADPROJ.title IS NULL OR (
-                            HEADPROJ.{self.IS_NOT_TRASHED}
-                        )
-                    )
-                )
-                ORDER BY TASK.duedate DESC , TASK.todayIndex
-            """
-        return self.get_rows(query)
+        """Get today tasks with specific tag."""
+        tasks = things.api.today(tag=tag, type=self.mode,
+                                 project=self.filter_project,
+                                 area=self.filter_area,
+                                 filepath=self.database)
+        tasks = self.convert_new_things_lib(tasks)
+        return tasks
 
     def get_anytime(self):
         """Get anytime tasks."""
@@ -415,23 +343,21 @@ class Things3():
 
     def get_completed(self):
         """Get completed tasks."""
-        query = f"""
-                TASK.{self.IS_NOT_TRASHED} AND
-                TASK.{self.IS_TASK} AND
-                TASK.{self.IS_DONE}
-                ORDER BY TASK.{self.DATE_STOP}
-                """
-        return self.get_rows(query)
+        tasks = things.api.completed(type=self.mode,
+                                     project=self.filter_project,
+                                     area=self.filter_area,
+                                     filepath=self.database)
+        tasks = self.convert_new_things_lib(tasks)
+        return tasks
 
     def get_cancelled(self):
         """Get cancelled tasks."""
-        query = f"""
-                TASK.{self.IS_NOT_TRASHED} AND
-                TASK.{self.IS_TASK} AND
-                TASK.{self.IS_CANCELLED}
-                ORDER BY TASK.{self.DATE_STOP}
-                """
-        return self.get_rows(query)
+        tasks = things.api.canceled(type=self.mode,
+                                    project=self.filter_project,
+                                    area=self.filter_area,
+                                    filepath=self.database)
+        tasks = self.convert_new_things_lib(tasks)
+        return tasks
 
     def get_trashed(self):
         """Get trashed tasks."""
@@ -444,87 +370,35 @@ class Things3():
 
     def get_projects(self, area=None):
         """Get projects."""
-        afilter = f'AND TASK.area = "{area}"' if area is not None else ''
-        query = f"""
-                SELECT
-                    TASK.uuid,
-                    TASK.title,
-                    NULL as context,
-                    (SELECT COUNT(uuid)
-                     FROM TMTask AS PROJECT_TASK
-                     WHERE
-                       PROJECT_TASK.project = TASK.uuid AND
-                       PROJECT_TASK.{self.IS_NOT_TRASHED} AND
-                       PROJECT_TASK.{self.IS_OPEN}
-                    ) AS size
-                FROM
-                    {self.TABLE_TASK} AS TASK
-                WHERE
-                    TASK.{self.IS_NOT_TRASHED} AND
-                    TASK.{self.IS_PROJECT} AND
-                    TASK.{self.IS_OPEN}
-                    {afilter}
-                ORDER BY TASK.title COLLATE NOCASE
-                """
-        return self.execute_query(query)
+        tasks = things.api.projects(area=area, filepath=self.database)
+        tasks = self.convert_new_things_lib(tasks)
+        return tasks
 
     def get_areas(self):
         """Get areas."""
-        query = f"""
-                SELECT
-                    AREA.uuid AS uuid,
-                    AREA.title AS title,
-                    (SELECT COUNT(uuid)
-                        FROM TMTask AS PROJECT
-                        WHERE
-                        PROJECT.area = AREA.uuid AND
-                        PROJECT.{self.IS_NOT_TRASHED} AND
-                        PROJECT.{self.IS_OPEN}
-                    ) AS size
-                FROM
-                    {self.TABLE_AREA} AS AREA
-                ORDER BY AREA.title COLLATE NOCASE
-                """
-        return self.execute_query(query)
+        tasks = things.api.areas(filepath=self.database)
+        tasks = self.convert_new_things_lib(tasks)
+        for task in tasks:
+            task['size'] = len(things.api.projects(
+                area=task['uuid'], filepath=self.database))
+        return tasks
 
     def get_all(self):
         """Get all tasks."""
-        query = f"""
-                TASK.{self.IS_NOT_TRASHED} AND
-                TASK.{self.IS_TASK} AND (
-                    (
-                        PROJECT.title IS NULL OR (
-                            PROJECT.{self.IS_NOT_TRASHED}
-                        )
-                    ) AND (
-                        HEADPROJ.title IS NULL OR (
-                            HEADPROJ.{self.IS_NOT_TRASHED}
-                        )
-                    )
-                )
-                """
-        return self.get_rows(query)
+        tasks = things.api.tasks(type=self.mode, project=self.filter_project,
+                                 area=self.filter_area, filepath=self.database)
+        tasks = self.convert_new_things_lib(tasks)
+        return tasks
 
     def get_due(self):
         """Get due tasks."""
-        query = f"""
-                TASK.{self.IS_NOT_TRASHED} AND
-                TASK.{self.IS_TASK} AND
-                TASK.{self.IS_OPEN} AND
-                TASK.{self.IS_DUE} AND (
-                    (
-                        PROJECT.title IS NULL OR (
-                            PROJECT.{self.IS_NOT_TRASHED}
-                        )
-                    ) AND (
-                        HEADPROJ.title IS NULL OR (
-                            HEADPROJ.{self.IS_NOT_TRASHED}
-                        )
-                    )
-                )
-                ORDER BY TASK.{self.DATE_DUE}
-                """
-        return self.get_rows(query)
+        tasks = things.api.deadlines(type=self.mode,
+                                     project=self.filter_project,
+                                     area=self.filter_area,
+                                     filepath=self.database)
+        tasks = self.convert_new_things_lib(tasks)
+        tasks.sort(key=lambda task: task["deadline"] or '', reverse=False)
+        return tasks
 
     def get_lint(self):
         """Get tasks that float around"""
@@ -645,42 +519,18 @@ class Things3():
 
     def get_minutes_today(self):
         """Count the planned minutes for today."""
-        query = f"""
-                SELECT
-                    SUM(TAG.title) AS minutes
-                FROM
-                    {self.TABLE_TASK} AS TASK
-                LEFT OUTER JOIN
-                TMTask PROJECT ON TASK.project = PROJECT.uuid
-                LEFT OUTER JOIN
-                    TMArea AREA ON TASK.area = AREA.uuid
-                LEFT OUTER JOIN
-                    TMTask HEADING ON TASK.actionGroup = HEADING.uuid
-                LEFT OUTER JOIN
-                    TMTask HEADPROJ ON HEADING.project = HEADPROJ.uuid
-                LEFT OUTER JOIN
-                    TMTaskTag TAGS ON TASK.uuid = TAGS.tasks
-                LEFT OUTER JOIN
-                    TMTag TAG ON TAGS.tags = TAG.uuid
-                WHERE
-                    printf("%d", TAG.title) = TAG.title AND
-                    TASK.{self.IS_NOT_TRASHED} AND
-                    TASK.{self.IS_TASK} AND
-                    TASK.{self.IS_OPEN} AND
-                    TASK.{self.IS_ANYTIME} AND
-                    TASK.{self.IS_SCHEDULED} AND (
-                        (
-                            PROJECT.title IS NULL OR (
-                                PROJECT.{self.IS_NOT_TRASHED}
-                            )
-                        ) AND (
-                            HEADPROJ.title IS NULL OR (
-                                HEADPROJ.{self.IS_NOT_TRASHED}
-                            )
-                        )
-                    )
-                """
-        return self.execute_query(query)
+
+        tasks = things.api.today(type=self.mode, project=self.filter_project,
+                                 area=self.filter_area, filepath=self.database)
+        tasks = self.convert_new_things_lib(tasks)
+        minutes = 0
+        for task in tasks:
+            for tag in task.get('tags', []):
+                try:
+                    minutes = minutes + int(tag)
+                except ValueError:
+                    pass
+        return [{'minutes': minutes}]
 
     def get_cleanup(self):
         """Tasks and projects that need work."""
@@ -764,7 +614,7 @@ class Things3():
             print(self.database)
             print(sql)
         try:
-            connection = sqlite3.connect(
+            connection = sqlite3.connect(  # pylint: disable=E1101
                 'file:' + self.database + '?mode=ro', uri=True)
             connection.row_factory = Things3.dict_factory
             cursor = connection.cursor()
@@ -775,7 +625,7 @@ class Things3():
                 for task in tasks:
                     print(task)
             return tasks
-        except sqlite3.OperationalError as error:
+        except sqlite3.OperationalError as error:  # pylint: disable=E1101
             print(f"Could not query the database at: {self.database}.")
             print(f"Details: {error}.")
             sys.exit(2)
@@ -783,11 +633,13 @@ class Things3():
     # pylint: disable=C0103
     def mode_project(self):
         """Hack to switch to project view"""
+        self.mode = 'project'
         self.IS_TASK = self.MODE_PROJECT
 
     # pylint: disable=C0103
     def mode_task(self):
         """Hack to switch to project view"""
+        self.mode = 'to-do'
         self.IS_TASK = self.MODE_TASK
 
     functions = {

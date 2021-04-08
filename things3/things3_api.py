@@ -9,7 +9,7 @@ __author__ = "Alexander Willner"
 __copyright__ = "Copyright 2020 Alexander Willner"
 __credits__ = ["Alexander Willner"]
 __license__ = "Apache License 2.0"
-__version__ = "2.6.3"
+__version__ = "2.7.0.dev1"
 __maintainer__ = "Alexander Willner"
 __email__ = "alex@willner.ws"
 __status__ = "Development"
@@ -111,22 +111,26 @@ class Things3API():
 
     def get_url(self):
         """Get the public url for the endpoint"""
-        fqdn = f'{socket.gethostname()}.local'
+        fqdn = f'{socket.gethostname()}.local'  # pylint: disable=E1101
         return f"http://{fqdn}:{self.port}"
 
     def api_filter(self, mode, uuid):
         """Filter view by specific modifiers"""
         if mode == "area" and uuid != "":
             self.things3.filter = f"TASK.area = '{uuid}' AND"
+            self.things3.filter_area = uuid
         if mode == "project" and uuid != "":
             self.things3.filter = f"""
                 (TASK.project = '{uuid}' OR HEADING.project = '{uuid}') AND
                 """
+            self.things3.filter_project = uuid
         return Response(status=200)
 
     def api_filter_reset(self):
         """Reset filter modifiers"""
         self.things3.filter = ""
+        self.things3.filter_project = None
+        self.things3.filter_area = None
         return Response(status=200)
 
     def __init__(self, database=None, host=None, port=None, expose=None):

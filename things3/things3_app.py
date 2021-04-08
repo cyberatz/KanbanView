@@ -10,7 +10,7 @@ __author__ = "Alexander Willner"
 __copyright__ = "Copyright 2020 Alexander Willner"
 __credits__ = ["Luc Beaulieu", "Alexander Willner"]
 __license__ = "Apache License 2.0"
-__version__ = "2.6.3"
+__version__ = "2.7.0.dev1"
 __maintainer__ = "Alexander Willner"
 __email__ = "alex@willner.ws"
 __status__ = "Development"
@@ -21,9 +21,6 @@ from os import system
 from threading import Thread
 import webview  # type: ignore
 import objc  # type: ignore # pylint: disable=unused-import # noqa F401
-# In case of `ModuleNotFoundError: No module named 'pkg_resources.py2_warn'` run:
-# pip3 install -r requirements.txt
-import pkg_resources.py2_warn  # type: ignore # pylint: disable=unused-import # noqa F401
 import things3.things3_api as things3_api
 
 

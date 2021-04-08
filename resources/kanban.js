@@ -4,14 +4,14 @@
 
 'use strict'
 
-var view = null
-var idxUUID = 'None'
+let view = null
+let idxUUID = 'None'
 const canvas = document.getElementById('canvas')
-var mode = 'task'
+let mode = 'task'
 const config = {}
 
 function round (value, precision) {
-  var multiplier = Math.pow(10, precision || 0)
+  const multiplier = Math.pow(10, precision || 0)
   return Math.round(value * multiplier) / multiplier
 }
 
@@ -98,13 +98,13 @@ function rowAdd (uuid, task, started, due, cssClass, context) {
           `
 }
 function rowsGet (rows) {
-  var fragment = ''
+  let fragment = ''
   rows.forEach(function (row) {
-    var cssClass = 'hasNoProject'
-    var task = row.title
-    var context = row.context
-    var due = ''
-    var started = ''
+    let cssClass = 'hasNoProject'
+    let task = row.title
+    let context = row.context
+    let due = ''
+    let started = ''
 
     if (row.type === 'project') {
       task = `${task} (${row.size})`
@@ -127,11 +127,11 @@ function rowsGet (rows) {
     } else {
       row.context = 'No Context'
     }
-    if (row.due !== null) {
+    if (row.due !== null && row.due !== undefined) {
       due = `Due: ${row.due}`
       cssClass = 'hasDeadline'
     }
-    if (row.started !== null) {
+    if (row.started !== null && row.started !== undefined) {
       started = `Start: ${row.started}`
     }
 
@@ -348,23 +348,23 @@ async function statsShowDistribution () { // eslint-disable-line no-unused-vars
   statsReplace(canv)
 
   const ctx = canv.getContext('2d')
-  var backlog = 0
+  let backlog = 0
   await requestSequencial('api/backlog').then(function (data) {
     backlog = JSON.parse(data.response).length
   })
-  var upcoming = 0
+  let upcoming = 0
   await requestSequencial('api/upcoming').then(function (data) {
     upcoming = JSON.parse(data.response).length
   })
-  var inbox = 0
+  let inbox = 0
   await requestSequencial('api/inbox').then(function (data) {
     inbox = JSON.parse(data.response).length
   })
-  var today = 0
+  let today = 0
   await requestSequencial('api/today').then(function (data) {
     today = JSON.parse(data.response).length
   })
-  var next = 0
+  let next = 0
   await requestSequencial('api/next').then(function (data) {
     next = JSON.parse(data.response).length
   })
@@ -457,7 +457,7 @@ async function statsShowMinutes () { // eslint-disable-line no-unused-vars
   requestSequencial(`api/tag/${config.D}`).then(function (data) { matrixReplace('D', data) })
   requestSequencial('api/stats-min-today').then(function (data) {
     const jsonfile = JSON.parse(data.response)
-    var minutes = jsonfile[0].minutes
+    let minutes = jsonfile[0].minutes
     if (minutes == null) {
       minutes = 'no time estimations'
     } else if (minutes === 60) {
@@ -501,7 +501,7 @@ async function statsShowUniverse () { // eslint-disable-line no-unused-vars
     const rMax = Math.max(...r)
     const chartData = []
 
-    for (var i = 0; i < labels.length; i++) {
+    for (let i = 0; i < labels.length; i++) {
       const chartDataset = {
         label: labels[i],
         backgroundColor: 'rgba(' + (r[i] / rMax) * 250 + ', 150, 0, 0.5)',
@@ -665,9 +665,9 @@ $(document).ready(function () {
       return
     }
     const liCount = $('li').length
-    var curentActive = 0
+    let curentActive = 0
 
-    var eachCounter = 0
+    let eachCounter = 0
     $('li').each(function () {
       if ($(this).hasClass('active')) {
         curentActive = eachCounter

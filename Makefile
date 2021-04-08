@@ -1,6 +1,6 @@
 -include appstore/Makefile
 
-VERSION=2.6.3
+VERSION=2.7.0.dev1
 MAIN=things3_kanban
 APP=things3_app
 SERVER=things3_api
@@ -122,7 +122,7 @@ lint: auto-style code-style code-lint js-lint css-lint
 
 code-style:
 	@type pycodestyle >/dev/null 2>&1 || (echo "Run '$(PIP) install pycodestyle' first." >&2 ; exit 1)
-	@pycodestyle --max-line-length=80 $(SRC_CORE) $(SRC_TEST)
+	@pycodestyle --max-line-length=80 --exclude=*appstore* $(SRC_CORE) $(SRC_TEST)
 
 code-lint:
 	@type pylint >/dev/null 2>&1 || (echo "Run '$(PIP) install pylint' first." >&2 ; exit 1)
@@ -130,11 +130,11 @@ code-lint:
 	@type mypy >/dev/null 2>&1 || (echo "Run '$(PIP) install mypy' first." >&2 ; exit 1)
 	@type vulture >/dev/null 2>&1 || (echo "Run '$(PIP) install vulture' first." >&2 ; exit 1)
 	@pip3 show pydiatra >/dev/null 2>&1 || (echo "Run '$(PIP) install pydiatra' first." >&2 ; exit 1)
-	@echo "Flake8:" ; $(PYTHON) -m flake8 --max-complexity 10 $(SRC_CORE) $(SRC_TEST) setup.py
+	@echo "Flake8:" ; $(PYTHON) -m flake8 --max-complexity 10 --exclude=*appstore* $(SRC_CORE) $(SRC_TEST) setup.py
 	@echo "Vulture:" ; $(PYTHON) -m vulture $(SRC_CORE) setup.py .vulture-whitelist
 	@echo "Pydiatra:" ; $(PYTHON) -m pydiatra $(SRC_CORE)/*.py $(SRC_TEST)/*.py  setup.py
-	@echo "Mypy:" ; $(PYTHON) -m mypy $(SRC_CORE) $(SRC_TEST) setup.py
-	@echo "PyLint:" ; $(PYTHON) -m pylint $(SRC_CORE)/*.py $(SRC_TEST)/*.py  setup.py
+	@echo "Mypy:" ; $(PYTHON) -m mypy --ignore-missing-imports $(SRC_CORE) $(SRC_TEST) setup.py
+	@echo "PyLint:" ; $(PYTHON) -m pylint --ignore-patterns=".*appstore.*" $(SRC_CORE)/*.py $(SRC_TEST)/*.py  setup.py
 
 css-lint:
 	@type csslint >/dev/null 2>&1 || (echo "Run 'npm install -g csslint' first." >&2 ; exit 1)
