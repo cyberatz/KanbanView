@@ -5,21 +5,13 @@
 
 from __future__ import print_function
 
-__author__ = "Alexander Willner"
-__copyright__ = "2020 Alexander Willner"
-__credits__ = ["Alexander Willner"]
-__license__ = "Apache License 2.0"
-__version__ = "2.7.0.dev1"
-__maintainer__ = "Alexander Willner"
-__email__ = "alex@willner.ws"
-__status__ = "Development"
-
 import sys
 import argparse
 import json
 import csv
 import webbrowser
 import argcomplete  # type: ignore
+import things3
 from things3.things3 import Things3
 from things3.things3_opml import Things3OPML
 
@@ -168,7 +160,7 @@ class Things3CLI():
         parser.add_argument(
             "--version",
             action="version",
-            version="%(prog)s (version {version})".format(version=__version__))
+            version="%(prog)s (version {version})".format(version=things3.__version__))
 
         argcomplete.autocomplete(parser)
 

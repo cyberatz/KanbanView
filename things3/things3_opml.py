@@ -5,14 +5,6 @@
 
 from __future__ import print_function
 
-__author__ = "Alexander Willner"
-__copyright__ = "2020 Alexander Willner"
-__credits__ = ["Alexander Willner"]
-__license__ = "Apache License 2.0"
-__version__ = "2.7.0.dev1"
-__maintainer__ = "Alexander Willner"
-__email__ = "alex@willner.ws"
-__status__ = "Development"
 
 import xml.etree.ElementTree as ET
 from xml.etree.ElementTree import Element, SubElement

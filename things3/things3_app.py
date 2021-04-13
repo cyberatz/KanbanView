@@ -5,16 +5,6 @@
 
 from __future__ import print_function
 
-# pylint: disable=duplicate-code
-__author__ = "Alexander Willner"
-__copyright__ = "Copyright 2020 Alexander Willner"
-__credits__ = ["Luc Beaulieu", "Alexander Willner"]
-__license__ = "Apache License 2.0"
-__version__ = "2.7.0.dev1"
-__maintainer__ = "Alexander Willner"
-__email__ = "alex@willner.ws"
-__status__ = "Development"
-
 import sys
 import signal
 from os import system
