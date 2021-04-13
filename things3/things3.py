@@ -45,14 +45,14 @@ class Things3():
     DATE_DUE = "dueDate"
     DATE_START = "startDate"
     DATE_STOP = "stopDate"
-    IS_INBOX = "start = 0" # noqa
+    IS_INBOX = "start = 0"  # noqa
     IS_ANYTIME = "start = 1"
     IS_SOMEDAY = "start = 2"
     IS_SCHEDULED = f"{DATE_START} IS NOT NULL"
     IS_NOT_SCHEDULED = f"{DATE_START} IS NULL"
-    IS_DUE = f"{DATE_DUE} IS NOT NULL" # noqa
+    IS_DUE = f"{DATE_DUE} IS NOT NULL"  # noqa
     IS_RECURRING = "recurrenceRule IS NOT NULL"
-    IS_NOT_RECURRING = "recurrenceRule IS NULL" # noqa
+    IS_NOT_RECURRING = "recurrenceRule IS NULL"  # noqa
     IS_TASK = "type = 0"
     IS_PROJECT = "type = 1"
     IS_HEADING = "type = 2"
@@ -211,25 +211,25 @@ class Things3():
             task['context_uuid'] = task.get("project", None) or \
                 task.get("area", None) or \
                 task.get("heading", None)
-            task['due'] = task.get('deadline', None)
-            task['started'] = task.get('start_date', None)
-            task['size'] = len(things.api.tasks(
-                project=task['uuid'], filepath=self.database))
+            task['due'] = task.get('deadline')
+            task['started'] = task.get('start_date')
+            task['size'] = things.projects(
+                task['uuid'], count_only=True, filepath=self.database)
         tasks.sort(key=lambda task: task['title'] or '', reverse=False)
         tasks = self.anonymize_tasks(tasks)
         return tasks
 
     def get_inbox(self):
         """Get tasks from inbox."""
-        tasks = things.api.inbox(type=self.mode, project=self.filter_project,
-                                 area=self.filter_area, filepath=self.database)
+        tasks = things.inbox(type=self.mode, project=self.filter_project,
+                             area=self.filter_area, filepath=self.database)
         tasks = self.convert_new_things_lib(tasks)
         return tasks
 
     def get_today(self):
         """Get tasks from today."""
-        tasks = things.api.today(type=self.mode, project=self.filter_project,
-                                 area=self.filter_area, filepath=self.database)
+        tasks = things.today(type=self.mode, project=self.filter_project,
+                             area=self.filter_area, filepath=self.database)
         tasks = self.convert_new_things_lib(tasks)
         tasks.sort(key=lambda task: task.get('started', ''), reverse=True)
         tasks.sort(key=lambda task: task.get('todayIndex', ''), reverse=False)
@@ -237,27 +237,27 @@ class Things3():
 
     def get_task(self, area=None, project=None):
         """Get tasks."""
-        tasks = things.api.tasks(
+        tasks = things.tasks(
             area=area, project=project, filepath=self.database)
         tasks = self.convert_new_things_lib(tasks)
         return tasks
 
     def get_someday(self):
         """Get someday tasks."""
-        tasks = things.api.someday(type=self.mode,
-                                   project=self.filter_project,
-                                   area=self.filter_area,
-                                   filepath=self.database)
+        tasks = things.someday(type=self.mode,
+                               project=self.filter_project,
+                               area=self.filter_area,
+                               filepath=self.database)
         tasks = self.convert_new_things_lib(tasks)
         tasks.sort(key=lambda task: task['deadline'] or '', reverse=True)
         return tasks
 
     def get_upcoming(self):
         """Get upcoming tasks."""
-        tasks = things.api.upcoming(type=self.mode,
-                                    project=self.filter_project,
-                                    area=self.filter_area,
-                                    filepath=self.database)
+        tasks = things.upcoming(type=self.mode,
+                                project=self.filter_project,
+                                area=self.filter_area,
+                                filepath=self.database)
         tasks = self.convert_new_things_lib(tasks)
         tasks.sort(key=lambda task: task['started'] or '', reverse=False)
         return tasks
@@ -275,10 +275,10 @@ class Things3():
     def get_tag(self, tag):
         """Get task with specific tag."""
         try:
-            tasks = things.api.tasks(tag=tag, type=self.mode,
-                                     project=self.filter_project,
-                                     area=self.filter_area,
-                                     filepath=self.database)
+            tasks = things.tasks(tag=tag, type=self.mode,
+                                 project=self.filter_project,
+                                 area=self.filter_area,
+                                 filepath=self.database)
             tasks = self.convert_new_things_lib(tasks)
         except ValueError:
             tasks = []
@@ -288,10 +288,10 @@ class Things3():
 
     def get_tag_today(self, tag):
         """Get today tasks with specific tag."""
-        tasks = things.api.today(tag=tag, type=self.mode,
-                                 project=self.filter_project,
-                                 area=self.filter_area,
-                                 filepath=self.database)
+        tasks = things.today(tag=tag, type=self.mode,
+                             project=self.filter_project,
+                             area=self.filter_area,
+                             filepath=self.database)
         tasks = self.convert_new_things_lib(tasks)
         return tasks
 
@@ -343,19 +343,19 @@ class Things3():
 
     def get_completed(self):
         """Get completed tasks."""
-        tasks = things.api.completed(type=self.mode,
-                                     project=self.filter_project,
-                                     area=self.filter_area,
-                                     filepath=self.database)
+        tasks = things.completed(type=self.mode,
+                                 project=self.filter_project,
+                                 area=self.filter_area,
+                                 filepath=self.database)
         tasks = self.convert_new_things_lib(tasks)
         return tasks
 
     def get_cancelled(self):
         """Get cancelled tasks."""
-        tasks = things.api.canceled(type=self.mode,
-                                    project=self.filter_project,
-                                    area=self.filter_area,
-                                    filepath=self.database)
+        tasks = things.canceled(type=self.mode,
+                                project=self.filter_project,
+                                area=self.filter_area,
+                                filepath=self.database)
         tasks = self.convert_new_things_lib(tasks)
         return tasks
 
@@ -370,32 +370,32 @@ class Things3():
 
     def get_projects(self, area=None):
         """Get projects."""
-        tasks = things.api.projects(area=area, filepath=self.database)
+        tasks = things.projects(area=area, filepath=self.database)
         tasks = self.convert_new_things_lib(tasks)
         return tasks
 
     def get_areas(self):
         """Get areas."""
-        tasks = things.api.areas(filepath=self.database)
+        tasks = things.areas(filepath=self.database)
         tasks = self.convert_new_things_lib(tasks)
         for task in tasks:
-            task['size'] = len(things.api.projects(
-                area=task['uuid'], filepath=self.database))
+            task['size'] = things.areas(
+                task['uuid'], count_only=True, filepath=self.database)
         return tasks
 
     def get_all(self):
         """Get all tasks."""
-        tasks = things.api.tasks(type=self.mode, project=self.filter_project,
-                                 area=self.filter_area, filepath=self.database)
+        tasks = things.tasks(type=self.mode, project=self.filter_project,
+                             area=self.filter_area, filepath=self.database)
         tasks = self.convert_new_things_lib(tasks)
         return tasks
 
     def get_due(self):
         """Get due tasks."""
-        tasks = things.api.deadlines(type=self.mode,
-                                     project=self.filter_project,
-                                     area=self.filter_area,
-                                     filepath=self.database)
+        tasks = things.deadlines(type=self.mode,
+                                 project=self.filter_project,
+                                 area=self.filter_area,
+                                 filepath=self.database)
         tasks = self.convert_new_things_lib(tasks)
         tasks.sort(key=lambda task: task["deadline"] or '', reverse=False)
         return tasks
@@ -520,14 +520,14 @@ class Things3():
     def get_minutes_today(self):
         """Count the planned minutes for today."""
 
-        tasks = things.api.today(type=self.mode, project=self.filter_project,
-                                 area=self.filter_area, filepath=self.database)
+        tasks = things.today(type=self.mode, project=self.filter_project,
+                             area=self.filter_area, filepath=self.database)
         tasks = self.convert_new_things_lib(tasks)
         minutes = 0
         for task in tasks:
             for tag in task.get('tags', []):
                 try:
-                    minutes = minutes + int(tag)
+                    minutes += int(tag)
                 except ValueError:
                     pass
         return [{'minutes': minutes}]
