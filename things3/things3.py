@@ -194,15 +194,20 @@ class Things3():
                     task['context']) if 'context' in task else ''
         return tasks
 
+    def defaults(self):
+        """Some default options for the new API."""
+        return dict(type=self.mode, project=self.filter_project,
+                    area=self.filter_area, filepath=self.database)
+
     def convert_new_things_lib(self, tasks):
         """Convert tasks from new library to old expectations."""
         for task in tasks:
-            task['context'] = task.get("project_title", None) or \
-                task.get("area_title", None) or \
-                task.get("heading_title", None)
-            task['context_uuid'] = task.get("project", None) or \
-                task.get("area", None) or \
-                task.get("heading", None)
+            task['context'] = task.get("project_title") or \
+                task.get("area_title") or \
+                task.get("heading_title")
+            task['context_uuid'] = task.get("project") or \
+                task.get("area") or \
+                task.get("heading")
             task['due'] = task.get('deadline')
             task['started'] = task.get('start_date')
             task['size'] = things.projects(
@@ -213,15 +218,13 @@ class Things3():
 
     def get_inbox(self):
         """Get tasks from inbox."""
-        tasks = things.inbox(type=self.mode, project=self.filter_project,
-                             area=self.filter_area, filepath=self.database)
+        tasks = things.inbox(**self.defaults())
         tasks = self.convert_new_things_lib(tasks)
         return tasks
 
     def get_today(self):
         """Get tasks from today."""
-        tasks = things.today(type=self.mode, project=self.filter_project,
-                             area=self.filter_area, filepath=self.database)
+        tasks = things.today(**self.defaults())
         tasks = self.convert_new_things_lib(tasks)
         tasks.sort(key=lambda task: task.get('started', ''), reverse=True)
         tasks.sort(key=lambda task: task.get('todayIndex', ''), reverse=False)
@@ -236,20 +239,14 @@ class Things3():
 
     def get_someday(self):
         """Get someday tasks."""
-        tasks = things.someday(type=self.mode,
-                               project=self.filter_project,
-                               area=self.filter_area,
-                               filepath=self.database)
+        tasks = things.someday(**self.defaults())
         tasks = self.convert_new_things_lib(tasks)
         tasks.sort(key=lambda task: task['deadline'] or '', reverse=True)
         return tasks
 
     def get_upcoming(self):
         """Get upcoming tasks."""
-        tasks = things.upcoming(type=self.mode,
-                                project=self.filter_project,
-                                area=self.filter_area,
-                                filepath=self.database)
+        tasks = things.upcoming(**self.defaults())
         tasks = self.convert_new_things_lib(tasks)
         tasks.sort(key=lambda task: task['started'] or '', reverse=False)
         return tasks
@@ -267,10 +264,7 @@ class Things3():
     def get_tag(self, tag):
         """Get task with specific tag."""
         try:
-            tasks = things.tasks(tag=tag, type=self.mode,
-                                 project=self.filter_project,
-                                 area=self.filter_area,
-                                 filepath=self.database)
+            tasks = things.tasks(tag=tag, **self.defaults())
             tasks = self.convert_new_things_lib(tasks)
         except ValueError:
             tasks = []
@@ -280,10 +274,7 @@ class Things3():
 
     def get_tag_today(self, tag):
         """Get today tasks with specific tag."""
-        tasks = things.today(tag=tag, type=self.mode,
-                             project=self.filter_project,
-                             area=self.filter_area,
-                             filepath=self.database)
+        tasks = things.today(tag=tag, **self.defaults())
         tasks = self.convert_new_things_lib(tasks)
         return tasks
 
@@ -335,19 +326,13 @@ class Things3():
 
     def get_completed(self):
         """Get completed tasks."""
-        tasks = things.completed(type=self.mode,
-                                 project=self.filter_project,
-                                 area=self.filter_area,
-                                 filepath=self.database)
+        tasks = things.completed(**self.defaults())
         tasks = self.convert_new_things_lib(tasks)
         return tasks
 
     def get_cancelled(self):
         """Get cancelled tasks."""
-        tasks = things.canceled(type=self.mode,
-                                project=self.filter_project,
-                                area=self.filter_area,
-                                filepath=self.database)
+        tasks = things.canceled(**self.defaults())
         tasks = self.convert_new_things_lib(tasks)
         return tasks
 
@@ -377,17 +362,13 @@ class Things3():
 
     def get_all(self):
         """Get all tasks."""
-        tasks = things.tasks(type=self.mode, project=self.filter_project,
-                             area=self.filter_area, filepath=self.database)
+        tasks = things.tasks(**self.defaults())
         tasks = self.convert_new_things_lib(tasks)
         return tasks
 
     def get_due(self):
         """Get due tasks."""
-        tasks = things.deadlines(type=self.mode,
-                                 project=self.filter_project,
-                                 area=self.filter_area,
-                                 filepath=self.database)
+        tasks = things.deadlines(**self.defaults())
         tasks = self.convert_new_things_lib(tasks)
         tasks.sort(key=lambda task: task["deadline"] or '', reverse=False)
         return tasks
@@ -512,8 +493,7 @@ class Things3():
     def get_minutes_today(self):
         """Count the planned minutes for today."""
 
-        tasks = things.today(type=self.mode, project=self.filter_project,
-                             area=self.filter_area, filepath=self.database)
+        tasks = things.today(**self.defaults())
         tasks = self.convert_new_things_lib(tasks)
         minutes = 0
         for task in tasks:
