@@ -20,14 +20,16 @@ import things
 # pylint: disable=R0904,R0902
 
 
-class Things3():
+class Things3:
     """Simple read-only API for Things 3."""
 
     # Database info
-    FILE_CONFIG = str(Path.home()) + '/.kanbanviewrc'
-    FILE_DB = '/Library/Group Containers/'\
-              'JLMPQHK86H.com.culturedcode.ThingsMac/'\
-              'Things Database.thingsdatabase/main.sqlite'
+    FILE_CONFIG = str(Path.home()) + "/.kanbanviewrc"
+    FILE_DB = (
+        "/Library/Group Containers/"
+        "JLMPQHK86H.com.culturedcode.ThingsMac/"
+        "Things Database.thingsdatabase/main.sqlite"
+    )
     TABLE_TASK = "TMTask"
     TABLE_AREA = "TMArea"
     TABLE_TAG = "TMTag"
@@ -74,60 +76,62 @@ class Things3():
     anonymize = False
     config = configparser.ConfigParser()
     config.read(FILE_CONFIG)
-    mode = 'to-do'
+    mode = "to-do"
     filter_project = None
     filter_area = None
 
     # pylint: disable=R0913
-    def __init__(self,
-                 database=None,
-                 tag_waiting=None,
-                 tag_mit=None,
-                 tag_cleanup=None,
-                 tag_a=None,
-                 tag_b=None,
-                 tag_c=None,
-                 tag_d=None,
-                 stat_days=None,
-                 anonymize=None):
+    def __init__(
+        self,
+        database=None,
+        tag_waiting=None,
+        tag_mit=None,
+        tag_cleanup=None,
+        tag_a=None,
+        tag_b=None,
+        tag_c=None,
+        tag_d=None,
+        stat_days=None,
+        anonymize=None,
+    ):
 
-        cfg = self.get_from_config(tag_waiting, 'TAG_WAITING')
+        cfg = self.get_from_config(tag_waiting, "TAG_WAITING")
         self.tag_waiting = cfg if cfg else self.tag_waiting
-        self.set_config('TAG_WAITING', self.tag_waiting)
+        self.set_config("TAG_WAITING", self.tag_waiting)
 
-        cfg = self.get_from_config(anonymize, 'ANONYMIZE')
-        self.anonymize = (cfg == 'True') if (cfg == 'True') else self.anonymize
-        self.set_config('ANONYMIZE', self.anonymize)
+        cfg = self.get_from_config(anonymize, "ANONYMIZE")
+        self.anonymize = (cfg == "True") if (cfg == "True") else self.anonymize
+        self.set_config("ANONYMIZE", self.anonymize)
 
-        cfg = self.get_from_config(tag_mit, 'TAG_MIT')
+        cfg = self.get_from_config(tag_mit, "TAG_MIT")
         self.tag_mit = cfg if cfg else self.tag_mit
-        self.set_config('TAG_MIT', self.tag_mit)
+        self.set_config("TAG_MIT", self.tag_mit)
 
-        cfg = self.get_from_config(tag_cleanup, 'TAG_CLEANUP')
+        cfg = self.get_from_config(tag_cleanup, "TAG_CLEANUP")
         self.tag_cleanup = cfg if cfg else self.tag_cleanup
-        self.set_config('TAG_CLEANUP', self.tag_cleanup)
+        self.set_config("TAG_CLEANUP", self.tag_cleanup)
 
-        cfg = self.get_from_config(tag_a, 'TAG_A')
+        cfg = self.get_from_config(tag_a, "TAG_A")
         self.tag_a = cfg if cfg else self.tag_a
-        self.set_config('TAG_A', self.tag_a)
+        self.set_config("TAG_A", self.tag_a)
 
-        cfg = self.get_from_config(tag_b, 'TAG_B')
+        cfg = self.get_from_config(tag_b, "TAG_B")
         self.tag_b = cfg if cfg else self.tag_b
-        self.set_config('TAG_B', self.tag_b)
+        self.set_config("TAG_B", self.tag_b)
 
-        cfg = self.get_from_config(tag_c, 'TAG_C')
+        cfg = self.get_from_config(tag_c, "TAG_C")
         self.tag_c = cfg if cfg else self.tag_c
-        self.set_config('TAG_C', self.tag_c)
+        self.set_config("TAG_C", self.tag_c)
 
-        cfg = self.get_from_config(tag_d, 'TAG_D')
+        cfg = self.get_from_config(tag_d, "TAG_D")
         self.tag_d = cfg if cfg else self.tag_d
-        self.set_config('TAG_D', self.tag_d)
+        self.set_config("TAG_D", self.tag_d)
 
-        cfg = self.get_from_config(stat_days, 'STAT_DAYS')
+        cfg = self.get_from_config(stat_days, "STAT_DAYS")
         self.stat_days = cfg if cfg else self.stat_days
-        self.set_config('STAT_DAYS', self.stat_days)
+        self.set_config("STAT_DAYS", self.stat_days)
 
-        cfg = self.get_from_config(database, 'THINGSDB')
+        cfg = self.get_from_config(database, "THINGSDB")
         self.database = cfg if cfg else self.database
         # Automated migration to new database location in Things 3.12.6/3.13.1
         # --------------------------------
@@ -138,9 +142,9 @@ class Things3():
         except (UnicodeDecodeError, FileNotFoundError, PermissionError):
             pass  # binary file (old database) or doesn't exist
         # --------------------------------
-        self.set_config('THINGSDB', self.database)
+        self.set_config("THINGSDB", self.database)
 
-    def set_config(self, key, value, domain='DATABASE'):
+    def set_config(self, key, value, domain="DATABASE"):
         """Write variable to config."""
         if domain not in self.config:
             self.config.add_section(domain)
@@ -149,14 +153,14 @@ class Things3():
             with open(self.FILE_CONFIG, "w+") as configfile:
                 self.config.write(configfile)
 
-    def get_config(self, key, domain='DATABASE'):
+    def get_config(self, key, domain="DATABASE"):
         """Get variable from config."""
         result = None
         if domain in self.config and key in self.config[domain]:
             result = path.expanduser(self.config[domain][key])
         return result
 
-    def get_from_config(self, variable, key, domain='DATABASE'):
+    def get_from_config(self, variable, key, domain="DATABASE"):
         """Set variable. Priority: input, environment, config"""
         result = None
         if variable is not None:
@@ -174,7 +178,7 @@ class Things3():
             return None
         string = list(string)
         shuffle(string)
-        string = ''.join(string)
+        string = "".join(string)
         return string
 
     @staticmethod
@@ -189,30 +193,38 @@ class Things3():
         """Scramble output for screenshots."""
         if self.anonymize:
             for task in tasks:
-                task['title'] = self.anonymize_string(task['title'])
-                task['context'] = self.anonymize_string(
-                    task['context']) if 'context' in task else ''
+                task["title"] = self.anonymize_string(task["title"])
+                task["context"] = (
+                    self.anonymize_string(task["context"]) if "context" in task else ""
+                )
         return tasks
 
     def defaults(self):
         """Some default options for the new API."""
-        return dict(type=self.mode, project=self.filter_project,
-                    area=self.filter_area, filepath=self.database)
+        return dict(
+            type=self.mode,
+            project=self.filter_project,
+            area=self.filter_area,
+            filepath=self.database,
+        )
 
     def convert_new_things_lib(self, tasks):
         """Convert tasks from new library to old expectations."""
         for task in tasks:
-            task['context'] = task.get("project_title") or \
-                task.get("area_title") or \
-                task.get("heading_title")
-            task['context_uuid'] = task.get("project") or \
-                task.get("area") or \
-                task.get("heading")
-            task['due'] = task.get('deadline')
-            task['started'] = task.get('start_date')
-            task['size'] = things.projects(
-                task['uuid'], count_only=True, filepath=self.database)
-        tasks.sort(key=lambda task: task['title'] or '', reverse=False)
+            task["context"] = (
+                task.get("project_title")
+                or task.get("area_title")
+                or task.get("heading_title")
+            )
+            task["context_uuid"] = (
+                task.get("project") or task.get("area") or task.get("heading")
+            )
+            task["due"] = task.get("deadline")
+            task["started"] = task.get("start_date")
+            task["size"] = things.projects(
+                task["uuid"], count_only=True, filepath=self.database
+            )
+        tasks.sort(key=lambda task: task["title"] or "", reverse=False)
         tasks = self.anonymize_tasks(tasks)
         return tasks
 
@@ -226,14 +238,13 @@ class Things3():
         """Get tasks from today."""
         tasks = things.today(**self.defaults())
         tasks = self.convert_new_things_lib(tasks)
-        tasks.sort(key=lambda task: task.get('started', ''), reverse=True)
-        tasks.sort(key=lambda task: task.get('todayIndex', ''), reverse=False)
+        tasks.sort(key=lambda task: task.get("started", ""), reverse=True)
+        tasks.sort(key=lambda task: task.get("todayIndex", ""), reverse=False)
         return tasks
 
     def get_task(self, area=None, project=None):
         """Get tasks."""
-        tasks = things.tasks(
-            area=area, project=project, filepath=self.database)
+        tasks = things.tasks(area=area, project=project, filepath=self.database)
         tasks = self.convert_new_things_lib(tasks)
         return tasks
 
@@ -241,20 +252,20 @@ class Things3():
         """Get someday tasks."""
         tasks = things.someday(**self.defaults())
         tasks = self.convert_new_things_lib(tasks)
-        tasks.sort(key=lambda task: task['deadline'] or '', reverse=True)
+        tasks.sort(key=lambda task: task["deadline"] or "", reverse=True)
         return tasks
 
     def get_upcoming(self):
         """Get upcoming tasks."""
         tasks = things.upcoming(**self.defaults())
         tasks = self.convert_new_things_lib(tasks)
-        tasks.sort(key=lambda task: task['started'] or '', reverse=False)
+        tasks.sort(key=lambda task: task["started"] or "", reverse=False)
         return tasks
 
     def get_waiting(self):
         """Get waiting tasks."""
         tasks = self.get_tag(self.tag_waiting)
-        tasks.sort(key=lambda task: task['started'] or '', reverse=False)
+        tasks.sort(key=lambda task: task["started"] or "", reverse=False)
         return tasks
 
     def get_mit(self):
@@ -269,7 +280,7 @@ class Things3():
         except ValueError:
             tasks = []
         if tag in [self.tag_waiting]:
-            tasks.sort(key=lambda task: task['started'] or '', reverse=False)
+            tasks.sort(key=lambda task: task["started"] or "", reverse=False)
         return tasks
 
     def get_tag_today(self, tag):
@@ -356,8 +367,9 @@ class Things3():
         tasks = things.areas(filepath=self.database)
         tasks = self.convert_new_things_lib(tasks)
         for task in tasks:
-            task['size'] = things.areas(
-                task['uuid'], count_only=True, filepath=self.database)
+            task["size"] = things.areas(
+                task["uuid"], count_only=True, filepath=self.database
+            )
         return tasks
 
     def get_all(self):
@@ -370,7 +382,7 @@ class Things3():
         """Get due tasks."""
         tasks = things.deadlines(**self.defaults())
         tasks = self.convert_new_things_lib(tasks)
-        tasks.sort(key=lambda task: task["deadline"] or '', reverse=False)
+        tasks.sort(key=lambda task: task["deadline"] or "", reverse=False)
         return tasks
 
     def get_lint(self):
@@ -497,12 +509,12 @@ class Things3():
         tasks = self.convert_new_things_lib(tasks)
         minutes = 0
         for task in tasks:
-            for tag in task.get('tags', []):
+            for tag in task.get("tags", []):
                 try:
                     minutes += int(tag)
                 except ValueError:
                     pass
-        return [{'minutes': minutes}]
+        return [{"minutes": minutes}]
 
     def get_cleanup(self):
         """Tasks and projects that need work."""
@@ -510,7 +522,7 @@ class Things3():
         result.extend(self.get_lint())
         result.extend(self.get_empty_projects())
         result.extend(self.get_tag(self.tag_cleanup))
-        result = [i for n, i in enumerate(result) if i not in result[n + 1:]]
+        result = [i for n, i in enumerate(result) if i not in result[n + 1 :]]
         return result
 
     @staticmethod
@@ -592,7 +604,8 @@ class Things3():
             print(sql)
         try:
             connection = sqlite3.connect(  # pylint: disable=E1101
-                'file:' + self.database + '?mode=ro', uri=True)
+                "file:" + self.database + "?mode=ro", uri=True
+            )
             connection.row_factory = Things3.dict_factory
             cursor = connection.cursor()
             cursor.execute(sql)
@@ -610,13 +623,13 @@ class Things3():
     # pylint: disable=C0103
     def mode_project(self):
         """Hack to switch to project view"""
-        self.mode = 'project'
+        self.mode = "project"
         self.IS_TASK = self.MODE_PROJECT
 
     # pylint: disable=C0103
     def mode_task(self):
         """Hack to switch to project view"""
-        self.mode = 'to-do'
+        self.mode = "to-do"
         self.IS_TASK = self.MODE_TASK
 
     functions = {
@@ -639,5 +652,5 @@ class Things3():
         "cleanup": get_cleanup,
         "top-proj": get_largest_projects,
         "stats-day": get_daystats,
-        "stats-min-today": get_minutes_today
+        "stats-min-today": get_minutes_today,
     }

@@ -113,16 +113,16 @@ clean:
 	@rm -f .coverage
 
 auto-style:
-	@type autopep8 >/dev/null 2>&1 || (echo "Run '$(PIP) install autopep8' first." >&2 ; exit 1)
-	@autopep8 -i -r $(SRC_CORE) $(SRC_TEST) setup.py
+	@type black >/dev/null 2>&1 || (echo "Run '$(PIP) install black' first." >&2 ; exit 1)
+	@black $(SRC_CORE) $(SRC_TEST) setup.py
 	@type standard >/dev/null 2>&1 || (echo "Run 'npm install -g standard' first." >&2 ; exit 1)
 	@standard --fix resources/*.js
 
-lint: auto-style code-style code-lint js-lint css-lint
+lint: code-style code-lint js-lint css-lint
 
 code-style:
 	@type pycodestyle >/dev/null 2>&1 || (echo "Run '$(PIP) install pycodestyle' first." >&2 ; exit 1)
-	@pycodestyle --max-line-length=80 --exclude=*appstore* $(SRC_CORE) $(SRC_TEST)
+	@pycodestyle --exclude=*appstore* $(SRC_CORE) $(SRC_TEST)
 
 code-lint:
 	@type pylint >/dev/null 2>&1 || (echo "Run '$(PIP) install pylint' first." >&2 ; exit 1)

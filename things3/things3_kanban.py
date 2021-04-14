@@ -11,43 +11,60 @@ from os import getcwd
 from things3.things3 import Things3
 
 # Basic variables
-FILE_HTML = getcwd() + '/kanban-static.html'
+FILE_HTML = getcwd() + "/kanban-static.html"
 THINGS3 = Things3()
-TARGET = codecs.open(FILE_HTML, 'w', 'utf-8')
+TARGET = codecs.open(FILE_HTML, "w", "utf-8")
 
 
 def write_html_column(cssclass, file, header, rows):
     """Create a column in the output."""
 
-    file.write("<div class='column'><div class=''>" +
-               "<h2 class='h2 " + cssclass + "'>" + header +
-               "<span class='size'>" + str(len(rows)) +
-               "</span></h2>")
+    file.write(
+        "<div class='column'><div class=''>"
+        + "<h2 class='h2 "
+        + cssclass
+        + "'>"
+        + header
+        + "<span class='size'>"
+        + str(len(rows))
+        + "</span></h2>"
+    )
 
     for row in rows:
-        task_uuid = str(row['uuid']) \
-            if row['uuid'] is not None else ''
-        task_title = str(row['title']) \
-            if row['title'] is not None else ''
-        context_title = str(row['context']) \
-            if row['context'] is not None else ''
-        context_uuid = str(row['context_uuid']) \
-            if row['context_uuid'] is not None else ''
-        deadline = str(row['due']) \
-            if row['due'] is not None else ''
+        task_uuid = str(row["uuid"]) if row["uuid"] is not None else ""
+        task_title = str(row["title"]) if row["title"] is not None else ""
+        context_title = str(row["context"]) if row["context"] is not None else ""
+        context_uuid = (
+            str(row["context_uuid"]) if row["context_uuid"] is not None else ""
+        )
+        deadline = str(row["due"]) if row["due"] is not None else ""
 
-        task_link = '<a href="things:///show?id=' + task_uuid + '">' + \
-            task_title + '</a>' if task_uuid != '' else task_title
-        context_link = '<a href="things:///show?id=' + context_uuid + '">' + \
-            context_title + '</a>' if context_uuid != '' else context_title
-        css_class = 'hasProject' if context_title != '' else 'hasNoProject'
-        css_class = 'hasDeadline' if deadline != '' else css_class
+        task_link = (
+            '<a href="things:///show?id=' + task_uuid + '">' + task_title + "</a>"
+            if task_uuid != ""
+            else task_title
+        )
+        context_link = (
+            '<a href="things:///show?id=' + context_uuid + '">' + context_title + "</a>"
+            if context_uuid != ""
+            else context_title
+        )
+        css_class = "hasProject" if context_title != "" else "hasNoProject"
+        css_class = "hasDeadline" if deadline != "" else css_class
 
-        file.write('<div class="box">' + task_link +
-                   '<div class="deadline">' + deadline + '</div>' +
-                   '<div class="area ' + css_class + '">' + context_link +
-                   '</div>' +
-                   '</div>')
+        file.write(
+            '<div class="box">'
+            + task_link
+            + '<div class="deadline">'
+            + deadline
+            + "</div>"
+            + '<div class="area '
+            + css_class
+            + '">'
+            + context_link
+            + "</div>"
+            + "</div>"
+        )
     file.write("</div></div>")
 
 

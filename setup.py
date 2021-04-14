@@ -16,26 +16,28 @@ def package_files(directory):
     return paths
 
 
-APP = ['bin/things-app']
+APP = ["bin/things-app"]
 APP_NAME = "KanbanView"
 AUTHOR = "Alexander Willner"
 AUTHOR_MAIL = "alex@willner.ws"
 DESCRIPTON = "A simple read-only CLI, API and Web Service for Things 3"
 URL = "https://kanbanview.app"
 VERSION = "2.7.0.dev1"
-DATA_FILES = package_files('resources')
+DATA_FILES = package_files("resources")
 OPTIONS = {
-    'argv_emulation': False,
-    'iconfile': 'resources/icon.icns',
-    'plist': {'CFBundleName': APP_NAME,
-              'CFBundleDisplayName': APP_NAME,
-              'CFBundleGetInfoString': APP_NAME,
-              'CFBundleIdentifier': "ws.willner.kanbanview",
-              'CFBundleVersion': VERSION,
-              'LSApplicationCategoryType': "public.app-category.productivity",
-              'LSMinimumSystemVersion': "10.13.0",
-              'NSHumanReadableCopyright': 'Copyright 2020 ' + AUTHOR},
-    'optimize': '2'
+    "argv_emulation": False,
+    "iconfile": "resources/icon.icns",
+    "plist": {
+        "CFBundleName": APP_NAME,
+        "CFBundleDisplayName": APP_NAME,
+        "CFBundleGetInfoString": APP_NAME,
+        "CFBundleIdentifier": "ws.willner.kanbanview",
+        "CFBundleVersion": VERSION,
+        "LSApplicationCategoryType": "public.app-category.productivity",
+        "LSMinimumSystemVersion": "10.13.0",
+        "NSHumanReadableCopyright": "Copyright 2020 " + AUTHOR,
+    },
+    "optimize": "2",
 }
 
 
@@ -59,18 +61,18 @@ setup(
         "Operating System :: MacOS :: MacOS X",
         "Environment :: Console",
         "Framework :: Flask",
-        "Natural Language :: English"
+        "Natural Language :: English",
     ],
-    python_requires='>=3.6',
+    python_requires=">=3.6",
     version=VERSION,
     data_files=DATA_FILES,
-    options={'py2app': OPTIONS},
-    setup_requires=['py2app'],
+    options={"py2app": OPTIONS},
+    setup_requires=["py2app"],
     entry_points={
-        'console_scripts': [
-            'things-cli = things3.things3_cli:main',
-            'things-api = things3.things3_api:main',
-            'things-kanban = things3.things3_app:main'
+        "console_scripts": [
+            "things-cli = things3.things3_cli:main",
+            "things-api = things3.things3_api:main",
+            "things-kanban = things3.things3_app:main",
         ]
-    }
+    },
 )

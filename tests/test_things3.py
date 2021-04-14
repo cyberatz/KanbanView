@@ -13,8 +13,8 @@ class Things3Case(unittest.TestCase):
     FILEPATH = dict(filepath="resources/demo.sqlite3")
 
     def setUp(self):
-        self.things3 = Things3(database='resources/demo.sqlite3')
-        self.things3.tag_mit = 'MIT'
+        self.things3 = Things3(database="resources/demo.sqlite3")
+        self.things3.tag_mit = "MIT"
 
     def test_today(self):
         """Test Today."""
@@ -22,7 +22,7 @@ class Things3Case(unittest.TestCase):
         self.assertEqual(4, len(tasks))
         titles = []
         for task in tasks:
-            titles.append(task['title'])
+            titles.append(task["title"])
         self.assertIn("Today MIT task without a project", titles)
         self.assertIn("Today items are shown here", titles)
 
@@ -32,7 +32,7 @@ class Things3Case(unittest.TestCase):
         self.assertEqual(3, len(tasks))
         titles = []
         for task in tasks:
-            titles.append(task['title'])
+            titles.append(task["title"])
         self.assertIn("Currently Things 3 tasks are supported", titles)
         self.assertIn("This is a demo setup", titles)
         self.assertIn("New tasks are shown here", titles)
@@ -44,7 +44,7 @@ class Things3Case(unittest.TestCase):
         # things.py: was 6 in old version
         titles = []
         for task in tasks:
-            titles.append(task['title'])
+            titles.append(task["title"])
         self.assertIn("Waiting for this...", titles)
 
     def test_next(self):
@@ -122,9 +122,9 @@ class Things3Case(unittest.TestCase):
     def test_get_minutes_today(self):
         """Test get minutes today."""
         minutes = self.things3.get_minutes_today()
-        self.assertEqual([{'minutes': 35}], minutes)
+        self.assertEqual([{"minutes": 35}], minutes)
 
-#    @unittest.skip(reason="not migrated to new lib")
+    #    @unittest.skip(reason="not migrated to new lib")
     def test_anonymize(self):
         """Test anonymized tasks."""
         tasks = self.things3.get_today()
@@ -134,5 +134,5 @@ class Things3Case(unittest.TestCase):
         self.assertNotEqual(tasks.pop(), task)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

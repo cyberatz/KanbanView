@@ -13,9 +13,9 @@ class Things3APICase(unittest.TestCase):
     """Class documentation goes here."""
 
     things3_api = things3_api.Things3API()
-    things3 = things3.Things3(database='resources/demo.sqlite3')
+    things3 = things3.Things3(database="resources/demo.sqlite3")
     things3.config = configparser.ConfigParser()
-    things3.config.read('tests/kanbanviewrc')
+    things3.config.read("tests/kanbanviewrc")
     things3_api.things3 = things3
 
     def test_today(self):
@@ -35,7 +35,7 @@ class Things3APICase(unittest.TestCase):
 
     def test_not_found(self):
         """Test not found."""
-        result = self.things3_api.on_get('sdf').status_code
+        result = self.things3_api.on_get("sdf").status_code
         self.assertEqual(404, result)
 
     def test_toggle(self):
@@ -51,8 +51,7 @@ class Things3APICase(unittest.TestCase):
 
     def test_filter(self):
         """Test Filter."""
-        self.things3_api.api_filter(
-            'project', 'F736F7F8-C9D5-4F30-B158-3684669985BC')
+        self.things3_api.api_filter("project", "F736F7F8-C9D5-4F30-B158-3684669985BC")
         result = json.loads(self.things3_api.api("next").response[0])
         self.assertEqual(26, len(result))
         self.things3_api.api_filter_reset()
@@ -61,15 +60,14 @@ class Things3APICase(unittest.TestCase):
 
     def test_get_file(self):
         """Test get file."""
-        result = self.things3_api.on_get(
-            "/kanban.html").response[0].decode("utf-8")
+        result = self.things3_api.on_get("/kanban.html").response[0].decode("utf-8")
         self.assertIn("kanban.js", result)
 
     def test_config(self):
         """Test configuration."""
-        result = self.things3_api.config_get('TAG_MIT').response[0]
+        result = self.things3_api.config_get("TAG_MIT").response[0]
         self.assertEqual(b"MIT", result)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()
