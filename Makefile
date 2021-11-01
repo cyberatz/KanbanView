@@ -154,7 +154,8 @@ code-count:
 
 deps-install:
 	@type $(PIPENV) >/dev/null 2>&1 || (echo "Run 'brew install pipenv' first." >&2 ; exit 1)
-	@$(PIPENV) install
+	@$(PIP) install things.py pywebview flask modulegraph macholib
+	@#$(PIPENV) install
 
 feedback:
 	@open https://github.com/AlexanderWillner/KanbanView/issues
