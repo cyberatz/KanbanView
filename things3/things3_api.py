@@ -142,6 +142,7 @@ class Things3API:
             "/config/<key>", view_func=self.config_set, methods=["PUT"]
         )
         self.flask.add_url_rule("/api/<command>", view_func=self.api)
+        self.flask.add_url_rule("/api/<command>", view_func=self.api, methods=["PUT"])
         self.flask.add_url_rule("/api/url", view_func=self.get_url)
         self.flask.add_url_rule("/api/tag/<tag>", view_func=self.tag)
         self.flask.add_url_rule("/api/tag/<tag>/<area>", view_func=self.tag)

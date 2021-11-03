@@ -713,6 +713,11 @@ async function savePreferences () { // eslint-disable-line no-unused-vars
   await requestSequencial('config/KANBANVIEW_PORT', 'PUT', document.getElementById('pref-port').value).then(readPreferences())
 }
 
+async function alertPreferences () { // eslint-disable-line no-unused-vars
+   await requestSequencial('api/reset', 'PUT', document.getElementById('pref-reset').value).then(readPreferences())
+   alert("Please restart KanbanView now")
+}
+
 async function showPreferences () { // eslint-disable-line no-unused-vars
   view = showPreferences
   kanbanHide()
@@ -729,7 +734,8 @@ async function showPreferences () { // eslint-disable-line no-unused-vars
                  rowAdd(null, 'Eisenhower "D" Tag: <input class="pref-input" id="pref-D" onchange="javascript:savePreferences();">', 'Tasks with this tag will be shown in the D quadrant of the Eisenhower view (not urgent and not important).', '', '', '') +
                  rowAdd(null, 'Days for history view: <input class="pref-input" id="pref-statdays" onchange="javascript:savePreferences();">', 'How many days the statistic view should consider (currently the app has to be restarted to take this preference to take effect).', '', '', '')
   const prefAPI = rowAdd(null, 'Expose API to network: <input class="pref-input" id="pref-expose" type="checkbox" onchange="javascript:savePreferences();">', 'If enabled, you can open the GUI by devices within your network, e.g. via an iPad by opening this link and saving it to the home screen: <i class="fa fa-external-link-alt"></i> <a id="host" href="#" target="_blank"></a>.', '', '', '') +
-                  rowAdd(null, 'PORT: <input class="pref-input" id="pref-port" onchange="javascript:savePreferences();">', 'TCP port the API is listening at.', '', '', '')
+                  rowAdd(null, 'PORT: <input class="pref-input" id="pref-port" onchange="javascript:savePreferences();">', 'TCP port the API is listening at.', '', '', '') +
+                  rowAdd(null, '<input type="button" class="pref-input" id="pref-reset" onclick="javascript:alertPreferences();" value="Reset Configuration">', 'Current DB: ' + config.thingsdb, '', '', '')
 
   prefs.innerHTML = columnAdd('Database', 'Database', '', '', 'color2', '', prefDB, 'database') +
                     columnAdd('API', 'API', '', '', 'color3', '', prefAPI, 'wifi')
@@ -750,6 +756,7 @@ async function showPreferences () { // eslint-disable-line no-unused-vars
 }
 
 async function readPreferences () {
+  await requestSequencial('config/THINGSDB').then(function (data) { config.thingsdb = data.response })
   await requestSequencial('config/TAG_MIT').then(function (data) { config.tag_mit = data.response })
   await requestSequencial('config/TAG_WAITING').then(function (data) { config.tag_waiting = data.response })
   await requestSequencial('config/TAG_CLEANUP').then(function (data) { config.tag_cleanup = data.response })

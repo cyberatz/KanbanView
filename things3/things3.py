@@ -9,6 +9,7 @@ from __future__ import print_function
 import sqlite3
 import sys
 from random import shuffle
+import os
 from os import environ, path
 import getpass
 import configparser
@@ -525,6 +526,11 @@ class Things3:
         result = [i for n, i in enumerate(result) if i not in result[n + 1 :]]
         return result
 
+    def reset_config(self):
+        """Reset the configuration."""
+        print("Deleting: " + self.FILE_CONFIG)
+        os.remove(self.FILE_CONFIG)
+
     @staticmethod
     def get_not_implemented():
         """Not implemented warning."""
@@ -653,4 +659,5 @@ class Things3:
         "top-proj": get_largest_projects,
         "stats-day": get_daystats,
         "stats-min-today": get_minutes_today,
+        "reset": reset_config,
     }
