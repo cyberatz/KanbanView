@@ -20,7 +20,7 @@ APP = ["bin/things-app"]
 APP_NAME = "KanbanView"
 AUTHOR = "Alexander Willner"
 AUTHOR_MAIL = "alex@willner.ws"
-DESCRIPTON = "A simple read-only CLI, API and Web Service for Things 3"
+DESCRIPTON = "A simple read-only Kanban App for Things 3"
 URL = "https://kanbanview.app"
 VERSION = "2.7.0.dev1"
 DATA_FILES = package_files("resources")
@@ -35,11 +35,10 @@ OPTIONS = {
         "CFBundleVersion": VERSION,
         "LSApplicationCategoryType": "public.app-category.productivity",
         "LSMinimumSystemVersion": "10.13.0",
-        "NSHumanReadableCopyright": "Copyright 2020 " + AUTHOR,
+        "NSHumanReadableCopyright": "Copyright 2021 " + AUTHOR,
     },
     "optimize": "2",
 }
-
 
 with open("README.md", "r") as fh:
     LONG_DESRIPTION = fh.read()
