@@ -1,6 +1,6 @@
 -include appstore/Makefile
 
-VERSION=2.7.0.dev1
+VERSION=$(shell grep "VERSION =" setup.py|awk -F '"' '{print $$2}'))
 MAIN=things3_kanban
 APP=things3_app
 SERVER=things3_api
