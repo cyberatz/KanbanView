@@ -163,7 +163,7 @@ class Things3CLI:
         parser.add_argument(
             "--version",
             action="version",
-            version="%(prog)s (version {version})".format(version=things3.__version__),
+            version=f"%(prog)s (version {things3.__version__})",
         )
 
         argcomplete.autocomplete(parser)
@@ -171,7 +171,7 @@ class Things3CLI:
         return parser
 
     def main(self, args=None):
-        """ Main entry point of the app """
+        """Main entry point of the app"""
 
         if args is None:
             self.main(Things3CLI.get_parser().parse_args())

@@ -137,7 +137,7 @@ class Things3:
         # Automated migration to new database location in Things 3.12.6/3.13.1
         # --------------------------------
         try:
-            with open(self.database) as f_d:
+            with open(self.database, encoding="utf-8") as f_d:
                 if "Your database file has been moved there" in f_d.readline():
                     self.database = f"/Users/{self.user}/{self.FILE_DB}"
         except (UnicodeDecodeError, FileNotFoundError, PermissionError):
@@ -151,7 +151,7 @@ class Things3:
             self.config.add_section(domain)
         if value is not None and key is not None:
             self.config.set(domain, str(key), str(value))
-            with open(self.FILE_CONFIG, "w+") as configfile:
+            with open(self.FILE_CONFIG, "w+", encoding="utf-8") as configfile:
                 self.config.write(configfile)
 
     def get_config(self, key, domain="DATABASE"):

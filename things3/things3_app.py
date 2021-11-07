@@ -46,22 +46,24 @@ class Things3App:
 
         print(f"Using database 1: {self.database}")
 
-        window = webview.create_window(
+        self.window = webview.create_window(
             title="KanbanView",
             url=f"http://{things3_api.Things3API.host}:"
             + f"{things3_api.Things3API.port}/{self.FILE}",
             width=1280,
             height=650,
             min_size=(1280, 650),
-            frameless=True,
+            frameless=False,
         )
+
         if not appstore:
-            window.closed += advertise
+            self.window.closed += advertise
+        self.window.closing += self.closing
         self.api_thread = Thread(target=self.open_api)
 
         try:
             self.api_thread.start()
-            webview.start()  # blocking
+            webview.start(self.closing, self.window)  # blocking
             self.api.flask_context.shutdown()
             self.api_thread.join()
         except KeyboardInterrupt:
@@ -69,6 +71,15 @@ class Things3App:
             self.api.flask_context.shutdown()
             self.api_thread.join()
             sys.exit(0)
+
+    def closing(self, _window=None):
+        """Close the app"""
+        if not _window:
+            self.window.destroy()
+            # self.api.flask_context.shutdown()
+            # self.api_thread.join()
+        else:
+            print(f"Registering close function for: {_window}")
 
 
 def advertise():
