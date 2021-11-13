@@ -154,7 +154,7 @@ class Things3API:
         self.flask_context = None
 
     def main(self):
-        """ "Main function."""
+        """Main function."""
         print(f"Serving at http://{self.host}:{self.port} ...")
 
         try:
