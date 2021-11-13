@@ -6,7 +6,7 @@
 import unittest
 import io
 import sys
-import things3.things3_cli as things3_cli
+from things3 import things3_cli
 
 
 class Things3CLICase(unittest.TestCase):
@@ -17,9 +17,7 @@ class Things3CLICase(unittest.TestCase):
     def test_methods(self):
         """Invoke all commands."""
         parser = self.things3_cli.get_parser()
-        for command in parser._subparsers._actions[  # pylint: disable=W0212
-            1
-        ].choices:
+        for command in parser._subparsers._actions[1].choices:  # pylint: disable=W0212
             if command != "feedback":
                 args = parser.parse_args([command])
                 new_out = io.StringIO()
@@ -53,7 +51,7 @@ class Things3CLICase(unittest.TestCase):
             self.things3_cli.main(args)
         finally:
             sys.stdout = old_out
-        self.assertIn("FBBB5D059751", new_out.getvalue())
+        self.assertIn("D82v818cpDQ2NLPZTqWwib", new_out.getvalue())
 
     def test_json(self):
         """Test Upcoming via JSON."""
@@ -65,7 +63,7 @@ class Things3CLICase(unittest.TestCase):
             self.things3_cli.main(args)
         finally:
             sys.stdout = old_out
-        self.assertIn("4F7006C4ADF7", new_out.getvalue())
+        self.assertIn("SGnEWYTSAcnXBLYuMourDj", new_out.getvalue())
 
 
 if __name__ == "__main__":

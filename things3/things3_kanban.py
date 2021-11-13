@@ -13,7 +13,6 @@ from things3.things3 import Things3
 # Basic variables
 FILE_HTML = getcwd() + "/kanban-static.html"
 THINGS3 = Things3()
-TARGET = codecs.open(FILE_HTML, "w", "utf-8")
 
 
 def write_html_column(cssclass, file, header, rows):
@@ -132,4 +131,5 @@ def main(output):
 
 
 if __name__ == "__main__":
-    main(TARGET)
+    with codecs.open(FILE_HTML, "w", "utf-8") as target:
+        main(target)

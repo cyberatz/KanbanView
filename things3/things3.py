@@ -4,9 +4,7 @@
 """Simple read-only API for Things 3."""
 
 from __future__ import print_function
-from things3 import __version__
 
-import sqlite3
 import sys
 from random import shuffle
 import os
@@ -14,9 +12,12 @@ from os import environ, path
 import getpass
 import configparser
 from pathlib import Path
+import sqlite3
+import webbrowser
 
 # the new core library, migration ongoing
 import things
+from things3 import __version__
 
 # pylint: disable=R0904,R0902
 
@@ -362,19 +363,23 @@ class Things3:
 
     def get_projects(self, area=None):
         """Get projects."""
-        tasks = things.projects(area=area, filepath=self.database)
-        tasks = self.convert_new_things_lib(tasks)
-        return tasks
+        projects = things.projects(area=area, filepath=self.database)
+        projects = self.convert_new_things_lib(projects)
+        for project in projects:
+            project["size"] = things.todos(
+                project=project["uuid"], count_only=True, filepath=self.database
+            )
+        return projects
 
     def get_areas(self):
         """Get areas."""
-        tasks = things.areas(filepath=self.database)
-        tasks = self.convert_new_things_lib(tasks)
-        for task in tasks:
-            task["size"] = things.areas(
-                task["uuid"], count_only=True, filepath=self.database
+        areas = things.areas(filepath=self.database)
+        areas = self.convert_new_things_lib(areas)
+        for area in areas:
+            area["size"] = things.todos(
+                area=area["uuid"], count_only=True, filepath=self.database
             )
-        return tasks
+        return areas
 
     def get_all(self):
         """Get all tasks."""
@@ -536,18 +541,17 @@ class Things3:
 
     def feedback(self):
         """Send feedback."""
-        import webbrowser
 
         recipient = "support@kanbanview.app"
         subject = "[KanbanView] Feedback"
         body = f"""
-Description: 
+Description:
 Version: {__version__}
 
 Steps that will reproduce the problem?
-1. 
-2. 
-3. 
+1.
+2.
+3.
 
 What is the expected result?
 

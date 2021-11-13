@@ -14,12 +14,12 @@ class Things3Case(unittest.TestCase):
 
     def setUp(self):
         self.things3 = Things3(database="resources/demo.sqlite3")
-        self.things3.tag_mit = "MIT"
+        self.things3.tag_mit = "😀"
 
     def test_today(self):
         """Test Today."""
         tasks = self.things3.get_today()
-        self.assertEqual(4, len(tasks))
+        self.assertEqual(5, len(tasks))
         titles = []
         for task in tasks:
             titles.append(task["title"])
@@ -50,7 +50,7 @@ class Things3Case(unittest.TestCase):
     def test_next(self):
         """Test Next."""
         tasks = self.things3.get_anytime()
-        self.assertEqual(29, len(tasks))
+        self.assertEqual(32, len(tasks))
 
     # def test_backlog(self):
     #     """Test Backlog."""
@@ -60,12 +60,12 @@ class Things3Case(unittest.TestCase):
     def test_waiting(self):
         """Test Waiting."""
         tasks = self.things3.get_waiting()
-        self.assertEqual(3, len(tasks))
+        self.assertEqual(8, len(tasks))
 
     def test_mit(self):
         """Test MIT."""
         tasks = self.things3.get_mit()
-        self.assertEqual(6, len(tasks))
+        self.assertEqual(8, len(tasks))
 
     def test_completed(self):
         """Test completed tasks."""
@@ -85,8 +85,7 @@ class Things3Case(unittest.TestCase):
     def test_all(self):
         """Test all tasks."""
         tasks = self.things3.get_all()
-        self.assertEqual(50, len(tasks))
-        # things.py: was 56 in old version
+        self.assertEqual(54, len(tasks))
 
     def test_due(self):
         """Test due tasks."""
@@ -112,12 +111,16 @@ class Things3Case(unittest.TestCase):
     def test_get_projects(self):
         """Test get projects."""
         projects = self.things3.get_projects()
-        self.assertEqual(7, len(projects))
+        self.assertEqual(8, len(projects))
+        for p in projects:
+            print(p)
+        self.assertEqual(2, projects.pop()["size"])
 
     def test_get_areas(self):
         """Test get areas."""
         areas = self.things3.get_areas()
         self.assertEqual(1, len(areas))
+        self.assertEqual(2, areas.pop()["size"])
 
     def test_get_minutes_today(self):
         """Test get minutes today."""

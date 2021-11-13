@@ -121,6 +121,7 @@ class Things3API:
         return Response(status=200)
 
     def __init__(self, database=None, host=None, port=None, expose=None, debug_text=""):
+        # pylint: disable-msg=too-many-arguments
         self.things3 = Things3(database=database, debug_text=debug_text)
 
         cfg = self.things3.get_from_config(host, "KANBANVIEW_HOST")

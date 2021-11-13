@@ -21,7 +21,12 @@ class Things3APICase(unittest.TestCase):
     def test_today(self):
         """Test Today."""
         result = json.loads(self.things3_api.api("today").response[0])
-        self.assertEqual(4, len(result))
+        self.assertEqual(5, len(result))
+
+    def test_areas(self):
+        """Test areas."""
+        result = json.loads(self.things3_api.api("areas").response[0])
+        self.assertEqual(1, len(result))
 
     def test_get_tag(self):
         """Test tags."""
@@ -41,22 +46,22 @@ class Things3APICase(unittest.TestCase):
     def test_toggle(self):
         """Test toggle."""
         result = json.loads(self.things3_api.api("next").response[0])
-        self.assertEqual(29, len(result))
+        self.assertEqual(32, len(result))
         self.things3_api.test_mode = "project"
         result = json.loads(self.things3_api.api("next").response[0])
-        self.assertEqual(5, len(result))
+        self.assertEqual(6, len(result))
         self.things3_api.test_mode = "task"
         result = json.loads(self.things3_api.api("next").response[0])
-        self.assertEqual(29, len(result))
+        self.assertEqual(32, len(result))
 
     def test_filter(self):
         """Test Filter."""
-        self.things3_api.api_filter("project", "F736F7F8-C9D5-4F30-B158-3684669985BC")
+        self.things3_api.api_filter("project", "D8A6Aknfmq69iW5noxLfz4")
         result = json.loads(self.things3_api.api("next").response[0])
-        self.assertEqual(26, len(result))
+        self.assertEqual(2, len(result))
         self.things3_api.api_filter_reset()
         result = json.loads(self.things3_api.api("next").response[0])
-        self.assertEqual(29, len(result))
+        self.assertEqual(32, len(result))
 
     def test_get_file(self):
         """Test get file."""

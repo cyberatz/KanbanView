@@ -5,7 +5,7 @@
 
 import unittest
 import io
-import things3.things3_kanban as things3_kanban
+from things3 import things3_kanban
 from things3.things3 import Things3
 
 

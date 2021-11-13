@@ -11,7 +11,7 @@ from os import system
 from threading import Thread
 import webview  # type: ignore
 import objc  # type: ignore # pylint: disable=unused-import # noqa F401
-import things3.things3_api as things3_api
+from things3 import things3_api
 
 
 class Things3App:
@@ -21,6 +21,7 @@ class Things3App:
     FILE = "kanban.html"
     api = None
     api_thread = None
+    window = None
 
     def open_api(self):
         """Delay opening the browser."""
