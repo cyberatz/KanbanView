@@ -8,8 +8,9 @@ __pycache__
 .coverage
 .mypy_cache/
 appstore
-bin/things-appstore
+bin/things*appstore*
 things3/things3_appstore.py
 node_modules/
 package-lock.json
 .eggs
+
