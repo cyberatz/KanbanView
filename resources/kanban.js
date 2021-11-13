@@ -718,6 +718,11 @@ async function alertPreferences () { // eslint-disable-line no-unused-vars
    alert("Please restart KanbanView now")
 }
 
+async function alertFeedback () { // eslint-disable-line no-unused-vars
+   await requestSequencial('api/feedback', 'PUT', document.getElementById('pref-feedback').value).then(readPreferences())
+   alert("Please switch to your email application now")
+}
+
 async function showPreferences () { // eslint-disable-line no-unused-vars
   view = showPreferences
   kanbanHide()
@@ -735,7 +740,8 @@ async function showPreferences () { // eslint-disable-line no-unused-vars
                  rowAdd(null, 'Days for history view: <input class="pref-input" id="pref-statdays" onchange="javascript:savePreferences();">', 'How many days the statistic view should consider (currently the app has to be restarted to take this preference to take effect).', '', '', '')
   const prefAPI = rowAdd(null, 'Expose API to network: <input class="pref-input" id="pref-expose" type="checkbox" onchange="javascript:savePreferences();">', 'If enabled, you can open the GUI by devices within your network, e.g. via an iPad by opening this link and saving it to the home screen: <i class="fa fa-external-link-alt"></i> <a id="host" href="#" target="_blank"></a>.', '', '', '') +
                   rowAdd(null, 'PORT: <input class="pref-input" id="pref-port" onchange="javascript:savePreferences();">', 'TCP port the API is listening at.', '', '', '') +
-                  rowAdd(null, '<input type="button" class="pref-input" id="pref-reset" onclick="javascript:alertPreferences();" value="Reset Configuration">', 'Current DB: ' + config.thingsdb, '', '', '')
+                  rowAdd(null, '<input type="button" class="pref-input" id="pref-reset" onclick="javascript:alertPreferences();" value="Reset Configuration">', 'Current DB: ' + config.thingsdb, '', '', '') +
+                  rowAdd(null, '<input type="button" class="pref-input" id="pref-feedback" onclick="javascript:alertFeedback();" value="Send Feedback">', 'Send debug reports or future requests', '', '', '')
 
   prefs.innerHTML = columnAdd('Database', 'Database', '', '', 'color2', '', prefDB, 'database') +
                     columnAdd('API', 'API', '', '', 'color3', '', prefAPI, 'wifi')

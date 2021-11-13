@@ -120,8 +120,8 @@ class Things3API:
         self.things3.filter_area = None
         return Response(status=200)
 
-    def __init__(self, database=None, host=None, port=None, expose=None):
-        self.things3 = Things3(database=database)
+    def __init__(self, database=None, host=None, port=None, expose=None, debug_text=""):
+        self.things3 = Things3(database=database, debug_text=debug_text)
 
         cfg = self.things3.get_from_config(host, "KANBANVIEW_HOST")
         self.host = cfg if cfg else self.host
@@ -154,7 +154,7 @@ class Things3API:
         self.flask_context = None
 
     def main(self):
-        """"Main function."""
+        """ "Main function."""
         print(f"Serving at http://{self.host}:{self.port} ...")
 
         try:

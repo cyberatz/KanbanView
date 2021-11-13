@@ -27,9 +27,9 @@ class Things3App:
         print(f"Using database 2: {self.database}")
         self.api.main()
 
-    def __init__(self, database=None):
+    def __init__(self, database=None, debug_text=""):
         self.database = database
-        self.api = things3_api.Things3API(database=self.database)
+        self.api = things3_api.Things3API(database=self.database, debug_text=debug_text)
 
     def sigterm_handler(self, _signo, _stack_frame):
         """Make sure the server shuts down."""

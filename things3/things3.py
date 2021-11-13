@@ -4,7 +4,7 @@
 """Simple read-only API for Things 3."""
 
 from __future__ import print_function
-
+from things3 import __version__
 
 import sqlite3
 import sys
@@ -76,10 +76,11 @@ class Things3:
     stat_days = 365
     anonymize = False
     config = configparser.ConfigParser()
-    config.read(FILE_CONFIG)
+    config.read(FILE_CONFIG, encoding="utf-8")
     mode = "to-do"
     filter_project = None
     filter_area = None
+    debug_text = ""
 
     # pylint: disable=R0913
     def __init__(
@@ -94,7 +95,9 @@ class Things3:
         tag_d=None,
         stat_days=None,
         anonymize=None,
+        debug_text="",
     ):
+        self.debug_text = debug_text
 
         cfg = self.get_from_config(tag_waiting, "TAG_WAITING")
         self.tag_waiting = cfg if cfg else self.tag_waiting
@@ -531,6 +534,43 @@ class Things3:
         print("Deleting: " + self.FILE_CONFIG)
         os.remove(self.FILE_CONFIG)
 
+    def feedback(self):
+        """Send feedback."""
+        import webbrowser
+
+        recipient = "support@kanbanview.app"
+        subject = "[KanbanView] Feedback"
+        body = f"""
+Description: 
+Version: {__version__}
+
+Steps that will reproduce the problem?
+1. 
+2. 
+3. 
+
+What is the expected result?
+
+
+What happens instead?
+
+
+Possible workaround:
+
+
+Any additional information:
+========= DEBUG INFORMATION =========
+{self.debug_text}
+========= DEBUG INFORMATION =========
+        """
+        # with open("body.txt", "r") as b:
+        #     body = b.read()
+        # body = body.replace(" ", "%20")
+        print(body)
+        webbrowser.open(
+            "mailto:?to=" + recipient + "&subject=" + subject + "&body=" + body, new=1
+        )
+
     @staticmethod
     def get_not_implemented():
         """Not implemented warning."""
@@ -660,4 +700,5 @@ class Things3:
         "stats-day": get_daystats,
         "stats-min-today": get_minutes_today,
         "reset": reset_config,
+        "feedback": feedback,
     }

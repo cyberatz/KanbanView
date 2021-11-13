@@ -65,8 +65,8 @@ class Things3APICase(unittest.TestCase):
 
     def test_config(self):
         """Test configuration."""
-        result = self.things3_api.config_get("TAG_MIT").response[0]
-        self.assertEqual(b"MIT", result)
+        result = self.things3_api.config_get("TAG_MIT").response[0].decode("utf-8")
+        self.assertEqual("😀", result)
 
 
 if __name__ == "__main__":
