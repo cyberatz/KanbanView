@@ -7,6 +7,7 @@ from __future__ import print_function
 
 import sys
 from random import shuffle
+from datetime import datetime, timedelta
 import os
 from os import environ, path
 import getpass
@@ -70,6 +71,7 @@ class Things3:
     tag_waiting = "Waiting"
     tag_mit = "MIT"
     tag_cleanup = "Cleanup"
+    tag_seinfeld = "Seinfeld"
     tag_a = "A"
     tag_b = "B"
     tag_c = "C"
@@ -90,6 +92,7 @@ class Things3:
         tag_waiting=None,
         tag_mit=None,
         tag_cleanup=None,
+        tag_seinfeld=None,
         tag_a=None,
         tag_b=None,
         tag_c=None,
@@ -115,6 +118,10 @@ class Things3:
         cfg = self.get_from_config(tag_cleanup, "TAG_CLEANUP")
         self.tag_cleanup = cfg if cfg else self.tag_cleanup
         self.set_config("TAG_CLEANUP", self.tag_cleanup)
+
+        cfg = self.get_from_config(tag_seinfeld, "TAG_SEINFELD")
+        self.tag_seinfeld = cfg if cfg else self.tag_seinfeld
+        self.set_config("TAG_SEINFELD", self.tag_seinfeld)
 
         cfg = self.get_from_config(tag_a, "TAG_A")
         self.tag_a = cfg if cfg else self.tag_a
@@ -525,6 +532,14 @@ class Things3:
                     pass
         return [{"minutes": minutes}]
 
+    def get_seinfeld(self, tag):
+        """Tasks logged recently with a specific tag."""
+
+        stop_date = (datetime.today() - timedelta(days=66)).strftime("%Y-%m-%d")
+        tasks = things.logbook(**self.defaults(), stop_date=stop_date, tag=tag)
+        tasks = self.convert_new_things_lib(tasks)
+        return tasks
+
     def get_cleanup(self):
         """Tasks and projects that need work."""
         result = []
@@ -700,6 +715,7 @@ Any additional information:
         "lint": get_lint,
         "empty": get_empty_projects,
         "cleanup": get_cleanup,
+        "seinfeld": get_seinfeld,
         "top-proj": get_largest_projects,
         "stats-day": get_daystats,
         "stats-min-today": get_minutes_today,

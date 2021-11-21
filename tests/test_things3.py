@@ -112,8 +112,6 @@ class Things3Case(unittest.TestCase):
         """Test get projects."""
         projects = self.things3.get_projects()
         self.assertEqual(8, len(projects))
-        for p in projects:
-            print(p)
         self.assertEqual(2, projects.pop()["size"])
 
     def test_get_areas(self):

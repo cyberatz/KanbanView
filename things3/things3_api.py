@@ -72,6 +72,12 @@ class Things3API:
             self.things3.set_config(key, value)
         return Response()
 
+    def seinfeld(self, tag):
+        """Get tasks logged recently with a specific tag."""
+        data = self.things3.get_seinfeld(tag)
+        data = json.dumps(data)
+        return Response(response=data, content_type="application/json")
+
     def tag(self, tag, area=None):
         """Get specific tag."""
         self.mode_selector()
@@ -145,6 +151,7 @@ class Things3API:
         self.flask.add_url_rule("/api/<command>", view_func=self.api)
         self.flask.add_url_rule("/api/<command>", view_func=self.api, methods=["PUT"])
         self.flask.add_url_rule("/api/url", view_func=self.get_url)
+        self.flask.add_url_rule("/api/seinfeld/<tag>", view_func=self.seinfeld)
         self.flask.add_url_rule("/api/tag/<tag>", view_func=self.tag)
         self.flask.add_url_rule("/api/tag/<tag>/<area>", view_func=self.tag)
         self.flask.add_url_rule("/api/filter/<mode>/<uuid>", view_func=self.api_filter)
