@@ -453,7 +453,7 @@ async function statsShowSeinfeld () {
 
   const content = `
     <div id='seinfeld-outer' class='seinfeld-outer'>
-      <h1>Seinfeld Calendar / 66 Day Challenge</h1>
+      <div class="title">Seinfeld Calendar / 66 Day Challenge</div>
       <p>Every day you finish or cancel an accordingly tagged task within the last 66 days, you'll color a circle in this diagram. Don't break the chain!</p>
       ${fragment}
     </div>`

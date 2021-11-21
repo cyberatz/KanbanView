@@ -340,12 +340,12 @@ a {
 .pref-input {
     margin-bottom: .7em;
 }
-#pref-reset {
+.pref-reset {
   background-color: #933;
   color:#fff;
   padding: .7em;
 }
-#pref-feedback {
+.pref-feedback {
   background-color: #333;
   color:#fff;
   padding: .7em;
@@ -447,25 +447,25 @@ a {
   padding: 3px;
 }
 
-#seinfeld-outer {
+.seinfeld-outer {
    margin:3em;
 }
-#seinfeld-outer h1 {
+.seinfeld-outer div.title {
   font-size: 3em;
 }
 
-#seinfeld-outer p {
+.seinfeld-outer p {
   font-size: larger;
 }
 
 .seinfeld-inner {
   border: 1px solid #999;
   border-radius: 50%;
-  height: 3em;
-  width: 3em;
-  margin:1em;
   float: left;
-}
+  height: 3em;
+  margin:1em;
+  width: 3em;
+} 
 
 /* ---------------------------------------- */
 
