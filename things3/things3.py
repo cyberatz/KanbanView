@@ -85,7 +85,7 @@ class Things3:
     filter_area = None
     debug_text = ""
 
-    # pylint: disable=R0913
+    # pylint: disable=R0913,C0330
     def __init__(
         self,
         database=None,
