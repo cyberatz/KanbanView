@@ -107,6 +107,7 @@ clean:
 	@rm -f $(DEST)
 	@find . -name \*.pyc -delete
 	@find . -name __pycache__ -delete
+	@rm -rf **/.mypy_cache
 	@rm -rf htmlcov
 	@rm -rf build dist *.egg-info
 	@rm -rf .mypy_cache/
