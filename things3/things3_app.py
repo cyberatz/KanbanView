@@ -10,7 +10,7 @@ import signal
 from os import system
 from threading import Thread
 import webview  # type: ignore
-import objc  # type: ignore # pylint: disable=unused-import # noqa F401
+import objc  # type: ignore # pylint: disable=unused-import,import-error # noqa F401
 from things3 import things3_api
 
 
