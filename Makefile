@@ -154,7 +154,7 @@ code-count:
 	@cloc $(SRC_CORE)
 
 deps-install:
-	@type $(PIPENV) >/dev/null 2>&1 || (echo "Run 'brew install pipenv' first." >&2 ; exit 1)
+	@#type $(PIPENV) >/dev/null 2>&1 || (echo "Run 'brew install pipenv' first." >&2 ; exit 1)
 	@$(PIP) install things.py pywebview flask modulegraph macholib
 	@#$(PIPENV) install
 
