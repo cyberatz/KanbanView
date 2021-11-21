@@ -435,6 +435,50 @@ function matrixReplace (id, data) {
   document.getElementById(id + '-inner').innerHTML = html
 }
 
+async function statsShowSeinfeld () { // eslint-disable-line no-unused-vars
+  view = statsShowSeinfeld
+  kanbanHide()
+  statsShow()
+
+  let fragment = ""
+  let id = ""
+  for (let i = 0; i <= 66; i++) {
+    id = new Date(new Date().setDate(new Date().getDate()-i)).toISOString().split('T')[0]
+    fragment += `<div class='seinfeld-inner' id='seinfeld-${id}' title='${id}'></div>`
+  }
+
+  // color3 = gray
+  // color6 = green
+  // color2 = red
+
+  const content = `
+    <div id='seinfeld-outer' class='seinfeld-outer'>
+      <h1>Seinfeld Calendar / 66 Day Challenge</h1>
+      <p>Every day you finish or cancel an accordingly tagged task within the last 66 days, you'll color a circle in this diagram. Don't break the chain!</p>
+      ${fragment}
+    </div>`
+
+  const canv = document.createElement('div')
+  canv.id = 'canvas'
+  canv.className = 'canvas container seinfeld'
+  canv.innerHTML = content
+  statsReplace(canv)
+
+  requestSequencial(`api/seinfeld/${config.tag_seinfeld}`).then(function (data) {
+    data = JSON.parse(data.response)
+    data.forEach(function (item) {
+      id = item.stop_date
+      if (item.status === 'completed') {
+        document.getElementById(`seinfeld-${id}`).classList.add('color6')
+      } else {
+        document.getElementById(`seinfeld-${id}`).classList.add('color2')
+      }
+    })
+    
+  })
+
+}
+
 async function statsShowMinutes () { // eslint-disable-line no-unused-vars
   view = statsShowMinutes
   kanbanHide()
@@ -704,6 +748,7 @@ async function savePreferences () { // eslint-disable-line no-unused-vars
   await requestSequencial('config/TAG_MIT', 'PUT', document.getElementById('pref-mit').value).then(readPreferences())
   await requestSequencial('config/TAG_WAITING', 'PUT', document.getElementById('pref-waiting').value).then(readPreferences())
   await requestSequencial('config/TAG_CLEANUP', 'PUT', document.getElementById('pref-cleanup').value).then(readPreferences())
+  await requestSequencial('config/TAG_SEINFELD', 'PUT', document.getElementById('pref-seinfeld').value).then(readPreferences())
   await requestSequencial('config/TAG_A', 'PUT', document.getElementById('pref-A').value).then(readPreferences())
   await requestSequencial('config/TAG_B', 'PUT', document.getElementById('pref-B').value).then(readPreferences())
   await requestSequencial('config/TAG_C', 'PUT', document.getElementById('pref-C').value).then(readPreferences())
@@ -733,6 +778,7 @@ async function showPreferences () { // eslint-disable-line no-unused-vars
   const prefDB = rowAdd(null, 'MIT Tag: <input class="pref-input" id="pref-mit" onchange="javascript:savePreferences();">', 'Tasks with this tag will be shown in the Most Important Task column.', '', '', '') +
                  rowAdd(null, 'Waiting Tag: <input class="pref-input" id="pref-waiting" onchange="javascript:savePreferences();">', 'Tasks with this tag will be shown in the Waiting column.', '', '', '') +
                  rowAdd(null, 'Cleanup Tag: <input class="pref-input" id="pref-cleanup" onchange="javascript:savePreferences();">', 'Tasks with this tag will be shown in the Grooming column.', '', '', '') +
+                 rowAdd(null, 'Seinfeld Tag: <input class="pref-input" id="pref-seinfeld" onchange="javascript:savePreferences();">', 'Tasks with this tag will be shown in the Seinfeld view.', '', '', '') +
                  rowAdd(null, 'Eisenhower "A" Tag: <input class="pref-input" id="pref-A" onchange="javascript:savePreferences();">', 'Tasks with this tag will be shown in the A quadrant of the Eisenhower view (urgent and important).', '', '', '') +
                  rowAdd(null, 'Eisenhower "B" Tag: <input class="pref-input" id="pref-B" onchange="javascript:savePreferences();">', 'Tasks with this tag will be shown in the B quadrant of the Eisenhower view (not urgent and important).', '', '', '') +
                  rowAdd(null, 'Eisenhower "C" Tag: <input class="pref-input" id="pref-C" onchange="javascript:savePreferences();">', 'Tasks with this tag will be shown in the C quadrant of the Eisenhower view (urgent and not important).', '', '', '') +
@@ -750,6 +796,7 @@ async function showPreferences () { // eslint-disable-line no-unused-vars
   document.getElementById('pref-mit').value = config.tag_mit
   document.getElementById('pref-waiting').value = config.tag_waiting
   document.getElementById('pref-cleanup').value = config.tag_cleanup
+  document.getElementById('pref-seinfeld').value = config.tag_seinfeld
   document.getElementById('pref-A').value = config.A
   document.getElementById('pref-B').value = config.B
   document.getElementById('pref-C').value = config.C
@@ -766,6 +813,7 @@ async function readPreferences () {
   await requestSequencial('config/TAG_MIT').then(function (data) { config.tag_mit = data.response })
   await requestSequencial('config/TAG_WAITING').then(function (data) { config.tag_waiting = data.response })
   await requestSequencial('config/TAG_CLEANUP').then(function (data) { config.tag_cleanup = data.response })
+  await requestSequencial('config/TAG_SEINFELD').then(function (data) { config.tag_seinfeld = data.response })
   await requestSequencial('config/TAG_A').then(function (data) { config.A = data.response })
   await requestSequencial('config/TAG_B').then(function (data) { config.B = data.response })
   await requestSequencial('config/TAG_C').then(function (data) { config.C = data.response })

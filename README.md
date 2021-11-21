@@ -49,27 +49,31 @@ The **app** version runs a macOS application via `make run-app`. You can also cr
 
 Dark mode with project mode enabled:
 
-![dark-mode](https://github.com/AlexanderWillner/KanbanView/raw/master/doc/KanbanView-AppStore-6.png)
+![dark-mode](https://github.com/AlexanderWillner/KanbanView/raw/master/doc/KanbanView-AppStore-6.jpg)
 
 Types of tasks:
 
-![stat-types](https://github.com/AlexanderWillner/KanbanView/raw/master/doc/KanbanView-AppStore-2.png)
+![stat-types](https://github.com/AlexanderWillner/KanbanView/raw/master/doc/KanbanView-AppStore-2.jpg)
 
 History of task actions:
 
-![stat-types](https://github.com/AlexanderWillner/KanbanView/raw/master/doc/KanbanView-AppStore-3.png)
+![stat-types](https://github.com/AlexanderWillner/KanbanView/raw/master/doc/KanbanView-AppStore-3.jpg)
 
 Universe view on the projects:
 
-![stat-types](https://github.com/AlexanderWillner/KanbanView/raw/master/doc/KanbanView-AppStore-4.png)
+![stat-types](https://github.com/AlexanderWillner/KanbanView/raw/master/doc/KanbanView-AppStore-4.jpg)
 
 How many minutes are scheduled for today (tags with plain numbers such as `5`, `15`, `30` are counted) and view tasks in an Eisenhower matrix (tags `A`, `B`, `C`, `D` are used):
 
-![stat-types](https://github.com/AlexanderWillner/KanbanView/raw/master/doc/KanbanView-AppStore-5.png)
+![stat-types](https://github.com/AlexanderWillner/KanbanView/raw/master/doc/KanbanView-AppStore-5.jpg)
+
+Challenge yourself for 66 days by trying to focus on completing a specific type of tasks (Seinfeld method):
+
+![stat-types](https://github.com/AlexanderWillner/KanbanView/raw/master/doc/KanbanView-AppStore-8.jpg)
 
 Remote control via iPad:
 
-![stat-types](https://github.com/AlexanderWillner/KanbanView/raw/master/doc/KanbanView-AppStore-7.png)
+![stat-types](https://github.com/AlexanderWillner/KanbanView/raw/master/doc/KanbanView-AppStore-7.jpg)
 
 ## Commands
 

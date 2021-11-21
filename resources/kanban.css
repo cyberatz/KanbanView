@@ -300,7 +300,6 @@ a {
   padding-bottom:15em;
 }
 
-
 .loading {
   font-size: xx-large;
   position: absolute;
@@ -448,6 +447,25 @@ a {
   padding: 3px;
 }
 
+#seinfeld-outer {
+   margin:3em;
+}
+#seinfeld-outer h1 {
+  font-size: 3em;
+}
+
+#seinfeld-outer p {
+  font-size: larger;
+}
+
+.seinfeld-inner {
+  border: 1px solid #999;
+  border-radius: 50%;
+  height: 3em;
+  width: 3em;
+  margin:1em;
+  float: left;
+}
 
 /* ---------------------------------------- */
 
