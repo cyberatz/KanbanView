@@ -15,14 +15,14 @@ class Things3Case(unittest.TestCase):
     def setUp(self):
         self.things3 = Things3(database="resources/demo.sqlite3")
         self.things3.tag_mit = "😀"
-        self.tag_waiting = "Waiting"
-        self.tag_cleanup = "Cleanup"
-        self.tag_seinfeld = "Seinfeld"
-        self.tag_a = "A"
-        self.tag_b = "B"
-        self.tag_c = "C"
-        self.tag_d = "D"
-        self.stat_days = 365
+        self.things3.tag_waiting = "Waiting"
+        self.things3.tag_cleanup = "Cleanup"
+        self.things3.tag_seinfeld = "Seinfeld"
+        self.things3.tag_a = "A"
+        self.things3.tag_b = "B"
+        self.things3.tag_c = "C"
+        self.things3.tag_d = "D"
+        self.things3.stat_days = 365
 
     def test_today(self):
         """Test Today."""
