@@ -67,7 +67,7 @@ How many minutes are scheduled for today (tags with plain numbers such as `5`, `
 
 ![stat-types](https://github.com/AlexanderWillner/KanbanView/raw/master/doc/KanbanView-AppStore-5.jpg)
 
-Challenge yourself for 66 days by trying to focus on completing a specific type of tasks (Seinfeld method):
+[Challenge yourself for 66 days](https://the1thing.com/2016/06/02/we-dare-you-to-take-a-66-day-challenge/) by trying to focus on completing a specific type of tasks ([Seinfeld method](https://lifehacker.com/281626)):
 
 ![stat-types](https://github.com/AlexanderWillner/KanbanView/raw/master/doc/KanbanView-AppStore-8.jpg)
 
