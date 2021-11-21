@@ -155,7 +155,7 @@ code-count:
 
 deps-install:
 	@#type $(PIPENV) >/dev/null 2>&1 || (echo "Run 'brew install pipenv' first." >&2 ; exit 1)
-	@$(PIP) install things.py pywebview flask modulegraph macholib
+	@$(PIP) install -r requirements.txt
 	@#$(PIPENV) install
 
 feedback:
