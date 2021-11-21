@@ -15,6 +15,14 @@ class Things3Case(unittest.TestCase):
     def setUp(self):
         self.things3 = Things3(database="resources/demo.sqlite3")
         self.things3.tag_mit = "😀"
+        self.tag_waiting = "Waiting"
+        self.tag_cleanup = "Cleanup"
+        self.tag_seinfeld = "Seinfeld"
+        self.tag_a = "A"
+        self.tag_b = "B"
+        self.tag_c = "C"
+        self.tag_d = "D"
+        self.stat_days = 365
 
     def test_today(self):
         """Test Today."""
@@ -60,7 +68,7 @@ class Things3Case(unittest.TestCase):
     def test_waiting(self):
         """Test Waiting."""
         tasks = self.things3.get_waiting()
-        self.assertEqual(8, len(tasks))
+        self.assertEqual(3, len(tasks))
 
     def test_mit(self):
         """Test MIT."""

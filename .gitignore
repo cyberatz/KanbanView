@@ -15,3 +15,5 @@ package-lock.json
 .eggs
 resources/*-shm
 resources/*-wal
+htmlcov
+
