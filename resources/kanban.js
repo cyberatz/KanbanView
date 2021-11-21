@@ -340,8 +340,8 @@ function canvasCreate () {
   return canvas
 }
 
-async function statsShowDistribution () { // eslint-disable-line no-unused-vars
-  view = statsShowDistribution
+async function statsShowDistribution () {
+  view = statsShowDistribution // eslint-disable-line no-unused-vars
   kanbanHide()
   statsShow()
   const canv = canvasCreate()
@@ -435,15 +435,15 @@ function matrixReplace (id, data) {
   document.getElementById(id + '-inner').innerHTML = html
 }
 
-async function statsShowSeinfeld () { // eslint-disable-line no-unused-vars
-  view = statsShowSeinfeld
+async function statsShowSeinfeld () {
+  view = statsShowSeinfeld // eslint-disable-line no-unused-vars
   kanbanHide()
   statsShow()
 
-  let fragment = ""
-  let id = ""
+  let fragment = ''
+  let id = ''
   for (let i = 0; i <= 66; i++) {
-    id = new Date(new Date().setDate(new Date().getDate()-i)).toISOString().split('T')[0]
+    id = new Date(new Date().setDate(new Date().getDate() - i)).toISOString().split('T')[0]
     fragment += `<div class='seinfeld-inner' id='seinfeld-${id}' title='${id}'></div>`
   }
 
@@ -474,13 +474,11 @@ async function statsShowSeinfeld () { // eslint-disable-line no-unused-vars
         document.getElementById(`seinfeld-${id}`).classList.add('color2')
       }
     })
-    
   })
-
 }
 
-async function statsShowMinutes () { // eslint-disable-line no-unused-vars
-  view = statsShowMinutes
+async function statsShowMinutes () {
+  view = statsShowMinutes // eslint-disable-line no-unused-vars
   kanbanHide()
   statsShow()
 
@@ -513,8 +511,8 @@ async function statsShowMinutes () { // eslint-disable-line no-unused-vars
   })
 }
 
-async function statsShowUniverse () { // eslint-disable-line no-unused-vars
-  view = statsShowUniverse
+async function statsShowUniverse () {
+  view = statsShowUniverse // eslint-disable-line no-unused-vars
   kanbanHide()
   statsShow()
   const canv = canvasCreate()
@@ -601,8 +599,8 @@ async function statsShowUniverse () { // eslint-disable-line no-unused-vars
   })
 }
 
-async function statsShowHistory () { // eslint-disable-line no-unused-vars
-  view = statsShowHistory
+async function statsShowHistory () {
+  view = statsShowHistory // eslint-disable-line no-unused-vars
   kanbanHide()
   statsShow()
   const canv = canvasCreate()
@@ -759,13 +757,13 @@ async function savePreferences () { // eslint-disable-line no-unused-vars
 }
 
 async function alertPreferences () { // eslint-disable-line no-unused-vars
-   await requestSequencial('api/reset', 'PUT', document.getElementById('pref-reset').value).then(readPreferences())
-   alert("Please restart KanbanView now")
+  await requestSequencial('api/reset', 'PUT', document.getElementById('pref-reset').value).then(readPreferences())
+  alert('Please restart KanbanView now')
 }
 
 async function alertFeedback () { // eslint-disable-line no-unused-vars
-   await requestSequencial('api/feedback', 'PUT', document.getElementById('pref-feedback').value).then(readPreferences())
-   alert("Please switch to your email application now")
+  await requestSequencial('api/feedback', 'PUT', document.getElementById('pref-feedback').value).then(readPreferences())
+  alert('Please switch to your email application now')
 }
 
 async function showPreferences () { // eslint-disable-line no-unused-vars
