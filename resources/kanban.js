@@ -469,9 +469,9 @@ async function statsShowSeinfeld () {
     data.forEach(function (item) {
       id = item.stop_date
       if (item.status === 'completed') {
-        document.getElementById(`seinfeld-${id}`).classList.add('color6')
+        document.getElementById(`seinfeld-${id}`).classList.add('hasProject')
       } else {
-        document.getElementById(`seinfeld-${id}`).classList.add('color2')
+        document.getElementById(`seinfeld-${id}`).classList.add('hasDeadline')
       }
     })
   })
